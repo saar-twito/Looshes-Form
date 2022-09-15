@@ -1,0 +1,19 @@
+Explanation:
+robots.txt file is a text file for controlling who can visit our website.
+With it, I can allow or disallowed or partially disallowed some website's URLs.
+So it controls if to be inside Google and other search engines or not.
+For more info: https://www.youtube.com/watch?v=LlJy5LRkUfs
+
+
+How does robots.txt file work?
+When search something on any search engine, the search bot (being the user-agent) finds the website to display the results.
+But before displaying it, or even indexing it, it searches for the robots.txt file of the website, if there’s any.
+If there is one, the search bot goes through it to check the allowed and disallowed sites on the website.
+It ignores all the disallowed sites sited on the file and goes on to show the allowed contents in the results.
+Thus, it can only see the allowed contents by the owner of the website.
+
+
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Disallow: /
+ 

@@ -1,0 +1,49 @@
+.wow-wrapper {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: baseline;
+    gap: 10px;
+
+    .rublica-wrapper {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 5px;
+
+      .remove-button {
+        background-color: red;
+      }
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+
+      .submit {
+        background-color: blue;
+      }
+      .add {
+        background-color: green;
+      }
+      .reset {
+        background-color: rgb(115, 0, 128);
+      }
+    }
+  }
+}
+
+button {
+  border: none;
+  outline: none;
+  color: white;
+  padding: 10px 15px;
+  font-weight: bold;
+}
