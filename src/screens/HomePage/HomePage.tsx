@@ -178,7 +178,7 @@ const HomePage = () => {
 
             {/* COMPANY NAME */}
             <div className="form-control">
-              <label htmlFor="companyName">שם העסק</label>
+              <label htmlFor="companyName">שם החברה</label>
               <input id="companyName" {...register("businessDetails.companyName")} />
             </div>
 
@@ -190,21 +190,8 @@ const HomePage = () => {
 
             {/* COMPANY PHONE */}
             <div className="form-control">
-              <label htmlFor="companyPhone">פלאפון חברה</label>
+              <label htmlFor="companyPhone">מספר טלפון</label>
               <input id="companyPhone" {...register('businessDetails.companyPhone')} />
-            </div>
-
-
-            {/* COMPANY OCCUPATION */}
-            <div className="form-control">
-              <label htmlFor="companyOccupation">עיסוק החברה</label>
-              <input id="companyOccupation" {...register('businessDetails.companyOccupation')} />
-            </div>
-
-            {/* COMPANY ADDRESS */}
-            <div className="form-control">
-              <label htmlFor="companyAddress">כתובת החברה</label>
-              <input id="companyAddress" {...register('businessDetails.companyAddress')} />
             </div>
 
             {/* FAX NUMBER */}
@@ -212,6 +199,21 @@ const HomePage = () => {
               <label htmlFor="faxNumber">מספר פקס</label>
               <input id="faxNumber" {...register('businessDetails.faxNumber')} />
             </div>
+
+
+            {/* COMPANY OCCUPATION */}
+            <div className="form-control">
+              <label htmlFor="companyOccupation">עיסוק</label>
+              <input id="companyOccupation" {...register('businessDetails.companyOccupation')} />
+            </div>
+
+            {/* COMPANY ADDRESS */}
+            <div className="form-control">
+              <label htmlFor="companyAddress">כתובת</label>
+              <input id="companyAddress" {...register('businessDetails.companyAddress')} />
+            </div>
+
+
 
             {/* EMAIL */}
             <div className="form-control">
@@ -245,7 +247,7 @@ const HomePage = () => {
             </tr>
             <tr>
               <td><textarea /></td>
-              <td><input type="color" /></td>
+              <td><textarea/></td>
               <td><textarea /></td>
               <td><input type="number" /></td>
               <td>X</td>
