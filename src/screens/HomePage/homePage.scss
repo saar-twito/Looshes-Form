@@ -1,49 +1,110 @@
-.wow-wrapper {
-  height: 100vh;
+.form-control {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  align-items: end;
+  gap: 3px;
 
-  form {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: baseline;
-    gap: 10px;
+  label {
+    font-size: 1.5rem;
+    color: #363636;
+    font-weight: 600;
+  }
 
-    .rublica-wrapper {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      gap: 5px;
-
-      .remove-button {
-        background-color: red;
-      }
-    }
-
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-
-      .submit {
-        background-color: blue;
-      }
-      .add {
-        background-color: green;
-      }
-      .reset {
-        background-color: rgb(115, 0, 128);
-      }
-    }
+  input:lang(he) {
+    border: 1.5px solid #dfdfdf;
+    padding: 9px;
+    outline: none;
+    direction: rtl;
+    width: -webkit-fill-available;
+    font-size: 16px;
   }
 }
 
-button {
-  border: none;
-  outline: none;
-  color: white;
-  padding: 10px 15px;
-  font-weight: bold;
+h3 {
+  font-size: 2.2rem;
+  direction: rtl;
+}
+
+
+.golden-tape-form-continuer {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: top;
+  padding-top: 25px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  .golden-tape-form-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: top;
+    text-align: center;
+    img {
+      width: 13rem;
+      margin: 0 auto;
+    }
+
+    h2 {
+      font-size: 3rem;
+      margin: 2rem 0 3rem 0;
+    }
+  }
+
+  form {
+    padding: 2rem;
+
+    .business-details-continuer {
+      margin-bottom: 3rem;
+      .business-details-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: row-reverse;
+      }
+
+      .rest-of-the-business-details-section {
+        background: #FFFFFF;
+        box-shadow: 0px 0px 34px rgba(0, 0, 0, 0.08);
+        margin: 2rem 0 0 0;
+        padding: 2rem;
+        display: flex;
+        justify-content: space-evenly;
+        flex-direction: column;
+        gap: 15px;
+      }
+    }
+
+    .description-of-the-request-continuer {
+      
+      table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 1.7rem;
+      }
+      
+      td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 5px;
+        text-align: -webkit-right;
+
+        input[type=number]{
+          width: 40px;
+        }
+        input[type=color]{
+          width: 30px;
+        }
+        input,textarea {
+          width: 80px;
+          word-break: break-all;
+          border: none;
+          outline: none;
+          font-size: 16px;
+          resize: none;
+        }
+      }
+    }
+  }
 }

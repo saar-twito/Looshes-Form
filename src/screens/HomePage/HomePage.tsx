@@ -4,15 +4,15 @@ import isAlpha from "validator/lib/isAlpha";
 import isAlphanumeric from "validator/lib/isAlphanumeric";
 import isMobilePhone from "validator/lib/isMobilePhone";
 import { useFieldArray, useForm } from 'react-hook-form';
+import logo from 'assets/logo.webp'
 import { yupResolver } from '@hookform/resolvers/yup';
-import { toast } from 'react-toastify';
-import { useEffect } from 'react';
 import './homePage.scss'
+import { useEffect } from 'react';
 
 
 interface ITest {
   itemName: "",
-  color: "",
+  color: "#f6b73c",
   amount: "",
   size: ""
 }
@@ -32,14 +32,13 @@ interface FormValues {
     faxNumber: string;
     companyAddress: string;
   }
-  descriptionOfTheRequest: ITest[]
+  descriptionOfTheRequest: ITest[],
+  array: string[];
 };
 
 
 const HomePage = () => {
-
-  // useEffect(() => appendToList(), [])
-
+  useEffect(() => appendToList(), [])
 
   // FORM SCHEMA WITH YUP
   const formSchema = Yup.object({
@@ -109,11 +108,13 @@ const HomePage = () => {
         amount: Yup.string().optional(),
         size: Yup.string().optional()
       })
-    )
+    ),
+
+    array: Yup.string().optional(),
   })
 
   // useForm Will help us managing the form properties
-  const { control, register, handleSubmit, formState: { errors } } = useForm<FormValues>({
+  const { control, register, handleSubmit, watch, formState: { errors } } = useForm<FormValues>({
     resolver: yupResolver(formSchema) // resolver for yup to work with react-hook-form
   });
   const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
@@ -121,24 +122,25 @@ const HomePage = () => {
     name: "descriptionOfTheRequest", // The name of the array
   });
 
-
   /* onSubmit form */
   const onSubmit = handleSubmit(async (data: FormValues) => {
-    console.log("onSubmit ~ data", data)
     for (let i = 0; i < data.descriptionOfTheRequest.length; i++) {
       const { amount, color, itemName, size } = data.descriptionOfTheRequest[i]
       if (!amount || !color || !itemName || !size) { // if one property of the rublica is empty.
         data.descriptionOfTheRequest.splice(i, 1)
       }
     }
-    console.log(data.descriptionOfTheRequest);
+    data.array = data.descriptionOfTheRequest.map((item, index) => {
+      return `${index} - item name: ${item.itemName}, size: ${item.size}, color: ${item.color}, amount:${item.amount} `
+    })
+    console.log(data.array);
   })
 
 
   const appendToList = () => {
     prepend({
       itemName: "",
-      color: "",
+      color: "#f6b73c",
       amount: "",
       size: ""
     })
@@ -149,18 +151,110 @@ const HomePage = () => {
   }
 
   return (
-    <div className="wow-wrapper">
+    <div className="golden-tape-form-continuer">
+
+      {/* Page Header */}
+      <header className="golden-tape-form-header">
+        <img src={logo} alt="" />
+        <h1>Golden Tape Ltd</h1>
+        <h2>טופס לקוח חדש</h2>
+      </header>
+
+      {/* Form */}
       <form onSubmit={onSubmit}>
 
-        <div className="form-control">
-          <label htmlFor="date"></label>
-          <input id="date" type="datetime-local" placeholder='date' {...register('date')} />
+        {/* Business Details Section */}
+        <div className="business-details-continuer">
+
+          <header className='business-details-header'>
+            <h3>פרטי העסק</h3>
+            <div className="form-control">
+              <label htmlFor="date">תאריך</label>
+              <input id="date" type="date" placeholder='date' {...register('date')} />
+            </div>
+          </header>
+
+          <div className="rest-of-the-business-details-section">
+
+            {/* COMPANY NAME */}
+            <div className="form-control">
+              <label htmlFor="companyName">שם העסק</label>
+              <input id="companyName" {...register("businessDetails.companyName")} />
+            </div>
+
+            {/* VAT NUMBER */}
+            <div className="form-control">
+              <label htmlFor="bnNumber">ח.פ / עוסק מורשה</label>
+              <input id="bnNumber" {...register('businessDetails.bnNumber')} />
+            </div>
+
+            {/* COMPANY PHONE */}
+            <div className="form-control">
+              <label htmlFor="companyPhone">פלאפון חברה</label>
+              <input id="companyPhone" {...register('businessDetails.companyPhone')} />
+            </div>
+
+
+            {/* COMPANY OCCUPATION */}
+            <div className="form-control">
+              <label htmlFor="companyOccupation">עיסוק החברה</label>
+              <input id="companyOccupation" {...register('businessDetails.companyOccupation')} />
+            </div>
+
+            {/* COMPANY ADDRESS */}
+            <div className="form-control">
+              <label htmlFor="companyAddress">כתובת החברה</label>
+              <input id="companyAddress" {...register('businessDetails.companyAddress')} />
+            </div>
+
+            {/* FAX NUMBER */}
+            <div className="form-control">
+              <label htmlFor="faxNumber">מספר פקס</label>
+              <input id="faxNumber" {...register('businessDetails.faxNumber')} />
+            </div>
+
+            {/* EMAIL */}
+            <div className="form-control">
+              <label htmlFor="email">כתובת אימייל</label>
+              <input id="email" type="email" {...register('businessDetails.email')} />
+            </div>
+
+
+            {/* PHONE PERSONAL */}
+            <div className="form-control">
+              <label htmlFor="phonePersonal">מספר סלולרי</label>
+              <input id="phonePersonal" {...register('businessDetails.phonePersonal')} />
+            </div>
+
+          </div>
+
         </div>
 
-        <div className="form-control">
-          <label htmlFor="companyName"></label>
-          <input id="companyName" placeholder='companyName' {...register("businessDetails.companyName")} />
+
+        {/* DESCRIPTION OF THE REQUEST SECTION */}
+        <div className="description-of-the-request-continuer">
+          <header>
+            <h3>תיאור הבקשה</h3>
+          </header>
+          <table>
+            <tr>
+              <th>מוצר</th>
+              <th>צבע</th>
+              <th>מידה</th>
+              <th>כמות</th>
+            </tr>
+            <tr>
+              <td><textarea /></td>
+              <td><input type="color" /></td>
+              <td><textarea /></td>
+              <td><input type="number" /></td>
+              <td>X</td>
+            </tr>
+          </table>
         </div>
+
+      </form>
+      {/* <form onSubmit={onSubmit}>
 
         <div className="form-control">
           <label htmlFor="firstName"></label>
@@ -168,44 +262,15 @@ const HomePage = () => {
         </div>
 
         <div className="form-control">
-          <label htmlFor="companyPhone"></label>
-          <input id="companyPhone" placeholder='companyPhone' {...register('businessDetails.companyPhone')} />
-        </div>
-
-        <div className="form-control">
-          <label htmlFor="email"></label>
-          <input id="email" type="email" placeholder='email' {...register('businessDetails.email')} />
-        </div>
-
-        <div className="form-control">
-          <label htmlFor="companyOccupation"></label>
-          <input id="companyOccupation" placeholder='companyOccupation' {...register('businessDetails.companyOccupation')} />
-        </div>
-
-        <div className="form-control">
-          <label htmlFor="bnNumber"></label>
-          <input id="bnNumber" placeholder='bnNumber' {...register('businessDetails.bnNumber')} />
-        </div>
-
-        <div className="form-control">
           <label htmlFor="lastName"></label>
           <input id="lastName" placeholder='lastName' {...register('businessDetails.lastName')} />
         </div>
 
-        <div className="form-control">
-          <label htmlFor="phonePersonal"></label>
-          <input id="phonePersonal" placeholder='phonePersonal' {...register('businessDetails.phonePersonal')} />
-        </div>
 
-        <div className="form-control">
-          <label htmlFor="faxNumber"></label>
-          <input id="faxNumber" placeholder='faxNumber' {...register('businessDetails.faxNumber')} />
-        </div>
 
-        <div className="form-control">
-          <label htmlFor="companyAddress"></label>
-          <input id="companyAddress" placeholder='companyAddress' {...register('businessDetails.companyAddress')} />
-        </div>
+
+
+
 
         {fields.map((field, index) => (
           <div key={field.id} className="rublica-wrapper">
@@ -218,7 +283,7 @@ const HomePage = () => {
 
             <div className="form-control">
               <label htmlFor={`color${index}`}></label>
-              <input id={`color${index}`} type="color" {...register(`descriptionOfTheRequest.${index}.color`)} />
+              <input id={`color${index}`} value="#f6b73c" type="color" {...register(`descriptionOfTheRequest.${index}.color`)} />
             </div>
 
 
@@ -236,11 +301,16 @@ const HomePage = () => {
           </div>
         ))}
 
+        <div className="form-control">
+          <label style={{ visibility: 'hidden' }} htmlFor="array"></label>
+          <input style={{ visibility: 'hidden' }} id="array" placeholder='array' {...register('array')} />
+        </div>
+
         <div className="buttons">
           <button type="submit" className="submit">Submit</button>
           <button type="button" className="add" onClick={() => appendToList()}>Add product</button>
         </div>
-      </form>
+      </form> */}
     </div>
   )
 }
