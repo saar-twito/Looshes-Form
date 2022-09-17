@@ -3,7 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
     "@hookform/resolvers": "^2.9.8",
+    "@mui/material": "^5.10.5",
+    "@mui/x-date-pickers": "^5.0.2",
+    "dayjs": "^1.11.5",
     "i18next": "^21.9.1",
     "node-sass": "^7.0.3",
     "react": "^17.0.2",

@@ -1,44 +1,73 @@
+import './homePage.scss'
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { AiOutlineUserDelete } from "react-icons/ai";
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { RiDeleteBinLine } from "react-icons/ri";
+import { useEffect, useState } from 'react';
+import { useFieldArray, useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import isEmail from "validator/lib/isEmail";
+import dayjs, { Dayjs } from 'dayjs';
 import isAlpha from "validator/lib/isAlpha";
 import isAlphanumeric from "validator/lib/isAlphanumeric";
+import isEmail from "validator/lib/isEmail";
 import isMobilePhone from "validator/lib/isMobilePhone";
-import { useFieldArray, useForm } from 'react-hook-form';
 import logo from 'assets/logo.webp'
-import { yupResolver } from '@hookform/resolvers/yup';
-import './homePage.scss'
-import { useEffect } from 'react';
+import TextField from '@mui/material/TextField';
+import UseWindowSize from 'common/hooks/UseWindowsSize';
 
 
-interface ITest {
+
+interface IAddProduct {
   itemName: "",
-  color: "#f6b73c",
+  color: "",
   amount: "",
   size: ""
+  kind: "",
 }
 
-// ALL THE FORM FIELDS
+interface IAddOwner {
+  firstName: "",
+  lastName: "",
+}
+
+
 interface FormValues {
   date: string
   businessDetails: {
     companyName: string;
-    firstName: string;
     companyPhone: string;
     email: string;
     companyOccupation: string;
     bnNumber: string;
-    lastName: string;
     phonePersonal: string;
     faxNumber: string;
     companyAddress: string;
   }
-  descriptionOfTheRequest: ITest[],
+  descriptionOfTheRequest: IAddProduct[];
+  owners: IAddOwner[]
   array: string[];
+  signerName: string;
+  message: string;
 };
 
 
 const HomePage = () => {
-  useEffect(() => appendToList(), [])
+  const [, screenWidth] = UseWindowSize();
+  const [value, setValue] = useState<Dayjs | null>(
+    dayjs(new Date()),
+  );
+
+  useEffect(() => {
+    addProduct();
+    addOwner();
+  }, [])
+
+  const handleChange = (newValue: Dayjs | null) => {
+    setValue(newValue);
+  };
 
   // FORM SCHEMA WITH YUP
   const formSchema = Yup.object({
@@ -50,19 +79,6 @@ const HomePage = () => {
         .max(50, "The company name should be max 50 characters.")
         .min(1, "The company name should by a minimum 1 character.")
         .required("A company name is required."),
-
-      firstName: Yup.string()
-        .test("is-name", "The first name should be in Hebrew or English.", value => isAlpha(`${value}`, 'en-US', { ignore: ' ' }) || isAlpha(`${value}`, 'he', { ignore: ' ' }))
-        .max(30, "The first name should be max 30 characters.")
-        .min(1, "The first name should be a minimum 1 character.")
-        .required("First name is required."),
-
-
-      lastName: Yup.string()
-        .test("is-name", "The last name should be in Hebrew or English.", value => isAlpha(`${value}`, 'en-US', { ignore: ' ' }) || isAlpha(`${value}`, 'he', { ignore: ' ' }))
-        .max(30, "The last name should max be 30 characters.")
-        .min(1, "The last name should minimum be 1 character.")
-        .required("Last name is required."),
 
       companyPhone: Yup.string()
         .test("is-phone", "The company's phone should be in Israel or USA format.", value => isMobilePhone(`${value}`, ['he-IL', 'en-US']))
@@ -110,210 +126,314 @@ const HomePage = () => {
       })
     ),
 
+    owners: Yup.array(
+      Yup.object({
+        firstName: Yup.string()
+          .test("is-first-name", "The first name should be in Hebrew or English.", value => isAlpha(`${value}`, 'en-US', { ignore: ' ' }) || isAlpha(`${value}`, 'he', { ignore: ' ' }))
+          .max(30, "The first name should be max 30 characters.")
+          .min(1, "The first name should be a minimum 1 character.")
+          .required("First name is required."),
+
+        lastName: Yup.string()
+          .test("is-last-name", "The last name should be in Hebrew or English.", value => isAlpha(`${value}`, 'en-US', { ignore: ' ' }) || isAlpha(`${value}`, 'he', { ignore: ' ' }))
+          .max(30, "The last name should max be 30 characters.")
+          .min(1, "The last name should minimum be 1 character.")
+          .required("Last name is required."),
+      })
+    ),
+
     array: Yup.string().optional(),
+    signerName: Yup.string().min(1).max(30).required(),
+    message: Yup.string().max(300).optional(),
   })
 
   // useForm Will help us managing the form properties
-  const { control, register, handleSubmit, watch, formState: { errors } } = useForm<FormValues>({
+  const { control, register, handleSubmit, formState: { errors }, watch } = useForm<FormValues>({
     resolver: yupResolver(formSchema) // resolver for yup to work with react-hook-form
   });
-  const { fields, append, prepend, remove, swap, move, insert } = useFieldArray({
+
+  const { fields, prepend, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: "descriptionOfTheRequest", // The name of the array
   });
 
+  const { fields: fieldsss, prepend: add, remove: removee } = useFieldArray({
+    control,
+    name: "owners",
+  });
+
   /* onSubmit form */
   const onSubmit = handleSubmit(async (data: FormValues) => {
+
     for (let i = 0; i < data.descriptionOfTheRequest.length; i++) {
       const { amount, color, itemName, size } = data.descriptionOfTheRequest[i]
       if (!amount || !color || !itemName || !size) { // if one property of the rublica is empty.
         data.descriptionOfTheRequest.splice(i, 1)
       }
     }
+
+
+    for (let i = 0; i < data.owners.length; i++) {
+      const { firstName, lastName } = data.owners[i]
+      if (!firstName || !lastName) { // if one property of the rublica is empty.
+        data.owners.splice(i, 1)
+      }
+    }
+
     data.array = data.descriptionOfTheRequest.map((item, index) => {
       return `${index} - item name: ${item.itemName}, size: ${item.size}, color: ${item.color}, amount:${item.amount} `
     })
-    console.log(data.array);
+    console.log(data);
   })
 
 
-  const appendToList = () => {
-    prepend({
-      itemName: "",
-      color: "#f6b73c",
-      amount: "",
-      size: ""
+  const addOwner = () => {
+    add({
+      firstName: "",
+      lastName: "",
     })
   }
 
-  const removeFromList = (index: number) => {
+
+  const removeOwner = (index: number) => {
+    removee(index)
+  }
+
+  const addProduct = () => {
+    prepend({
+      itemName: "",
+      color: "",
+      amount: "",
+      size: "",
+      kind: ""
+    })
+  }
+
+  const removeProduct = (index: number) => {
     remove(index)
   }
 
+
   return (
-    <div className="golden-tape-form-continuer">
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <div className="golden-tape-form-container">
 
-      {/* Page Header */}
-      <header className="golden-tape-form-header">
-        <img src={logo} alt="" />
-        <h1>Golden Tape Ltd</h1>
-        <h2>טופס לקוח חדש</h2>
-      </header>
+        {/* Page Header */}
+        <header className="golden-tape-form-header">
+          <img src={logo} alt="" />
+          <h1>Golden Tape Ltd</h1>
+          <h2>טופס לקוח חדש</h2>
+        </header>
 
-      {/* Form */}
-      <form onSubmit={onSubmit}>
+        {/* Form */}
+        <form onSubmit={onSubmit} autoComplete="off">
 
-        {/* Business Details Section */}
-        <div className="business-details-continuer">
+          {/* Business Details Section */}
+          <div className="business-details-container">
 
-          <header className='business-details-header'>
-            <h3>פרטי העסק</h3>
-            <div className="form-control">
-              <label htmlFor="date">תאריך</label>
-              <input id="date" type="date" placeholder='date' {...register('date')} />
+            <header className='business-details-header'>
+              <h3>פרטי העסק</h3>
+              <div className="form-control">
+                <label htmlFor="date">תאריך</label>
+
+                {screenWidth < 500 ? <>
+                  <MobileDatePicker
+                    inputFormat="DD/MM/YYYY"
+                    value={value}
+                    closeOnSelect={true}
+                    onChange={handleChange}
+                    className="form-control-date"
+                    renderInput={(params) => <TextField {...params} />}
+                  />
+                </> :
+                  <>
+                    <DesktopDatePicker
+                      inputFormat="DD/MM/YYYY"
+                      value={value}
+                      closeOnSelect={false}
+                      onChange={handleChange}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </>}
+              </div>
+            </header>
+
+            <div className="white-container">
+
+              {/* COMPANY NAME */}
+              <div className="form-control">
+                <label htmlFor="companyName">שם החברה</label>
+                <input id="companyName" {...register("businessDetails.companyName")} />
+              </div>
+
+
+              {/* COMPANY ADDRESS */}
+              <div className="form-control">
+                <label htmlFor="companyAddress">כתובת</label>
+                <input id="companyAddress" {...register('businessDetails.companyAddress')} />
+              </div>
+
+
+              {/* VAT NUMBER */}
+              <div className="form-control">
+                <label htmlFor="bnNumber">ח.פ / עוסק מורשה</label>
+                <input id="bnNumber" {...register('businessDetails.bnNumber')} />
+              </div>
+
+
+              {/* COMPANY PHONE */}
+              <div className="form-control">
+                <label htmlFor="companyPhone">מספר טלפון</label>
+                <input id="companyPhone" {...register('businessDetails.companyPhone')} />
+              </div>
+
+
+              {/* PHONE PERSONAL */}
+              <div className="form-control">
+                <label htmlFor="phonePersonal">מספר סלולרי</label>
+                <input id="phonePersonal" {...register('businessDetails.phonePersonal')} />
+              </div>
+
+              {/* FAX NUMBER */}
+              <div className="form-control">
+                <label htmlFor="faxNumber">מספר פקס</label>
+                <input id="faxNumber" {...register('businessDetails.faxNumber')} />
+              </div>
+
+              {/* EMAIL */}
+              <div className="form-control">
+                <label htmlFor="email">כתובת אימייל</label>
+                <input id="email" type="email" {...register('businessDetails.email')} />
+              </div>
+
+
+              {/* COMPANY OCCUPATION */}
+              <div className="form-control">
+                <label htmlFor="companyOccupation">עיסוק</label>
+                <input id="companyOccupation" {...register('businessDetails.companyOccupation')} />
+              </div>
+
             </div>
-          </header>
-
-          <div className="rest-of-the-business-details-section">
-
-            {/* COMPANY NAME */}
-            <div className="form-control">
-              <label htmlFor="companyName">שם החברה</label>
-              <input id="companyName" {...register("businessDetails.companyName")} />
-            </div>
-
-            {/* VAT NUMBER */}
-            <div className="form-control">
-              <label htmlFor="bnNumber">ח.פ / עוסק מורשה</label>
-              <input id="bnNumber" {...register('businessDetails.bnNumber')} />
-            </div>
-
-            {/* COMPANY PHONE */}
-            <div className="form-control">
-              <label htmlFor="companyPhone">מספר טלפון</label>
-              <input id="companyPhone" {...register('businessDetails.companyPhone')} />
-            </div>
-
-            {/* FAX NUMBER */}
-            <div className="form-control">
-              <label htmlFor="faxNumber">מספר פקס</label>
-              <input id="faxNumber" {...register('businessDetails.faxNumber')} />
-            </div>
-
-
-            {/* COMPANY OCCUPATION */}
-            <div className="form-control">
-              <label htmlFor="companyOccupation">עיסוק</label>
-              <input id="companyOccupation" {...register('businessDetails.companyOccupation')} />
-            </div>
-
-            {/* COMPANY ADDRESS */}
-            <div className="form-control">
-              <label htmlFor="companyAddress">כתובת</label>
-              <input id="companyAddress" {...register('businessDetails.companyAddress')} />
-            </div>
-
-
-
-            {/* EMAIL */}
-            <div className="form-control">
-              <label htmlFor="email">כתובת אימייל</label>
-              <input id="email" type="email" {...register('businessDetails.email')} />
-            </div>
-
-
-            {/* PHONE PERSONAL */}
-            <div className="form-control">
-              <label htmlFor="phonePersonal">מספר סלולרי</label>
-              <input id="phonePersonal" {...register('businessDetails.phonePersonal')} />
-            </div>
-
           </div>
 
-        </div>
+
+          {/* Owners details */}
+          <h3>פרטי בעל\י החברה</h3>
+          <div className="white-container">
+            <table>
+              <tr>
+                <th>שם משפחה</th>
+                <th>שם פרטי</th>
+              </tr>
+              {fieldsss.map((field, index) => (
+                <tr key={field.id}>
+                  <td><input style={{ width: '100%' }} autoComplete="new-password" {...register(`owners.${index}.firstName`)} /></td>
+                  <td> <input style={{ width: '100%' }} autoComplete="new-password" {...register(`owners.${index}.lastName`)} /></td>
+                  <td className="remove-trash-td"><AiOutlineUserDelete onClick={() => removeOwner(index)} className='remove-trash-icon' /></td>
+                </tr>
+              ))}
+            </table>
+            <button type="button" className="add-product" onClick={() => addOwner()}>הוסף בעלים</button>
+          </div>
 
 
-        {/* DESCRIPTION OF THE REQUEST SECTION */}
-        <div className="description-of-the-request-continuer">
-          <header>
+          {/* DESCRIPTION OF THE REQUEST SECTION */}
+          {screenWidth < 500 ? <>
             <h3>תיאור הבקשה</h3>
-          </header>
-          <table>
-            <tr>
-              <th>מוצר</th>
-              <th>צבע</th>
-              <th>מידה</th>
-              <th>כמות</th>
-            </tr>
-            <tr>
-              <td><textarea /></td>
-              <td><textarea/></td>
-              <td><textarea /></td>
-              <td><input type="number" /></td>
-              <td>X</td>
-            </tr>
-          </table>
-        </div>
+            <div className="description-of-the-request-container white-container">
 
-      </form>
-      {/* <form onSubmit={onSubmit}>
+              {fields.map((field, index) => (
+                <>
+                {/* SMALL SCREENS */}
+                  <div key={field.id} className="products-list-for-small-screens">
 
-        <div className="form-control">
-          <label htmlFor="firstName"></label>
-          <input id="firstName" placeholder='firstName' {...register('businessDetails.firstName')} />
-        </div>
+                    <div className="form-control">
+                      <label htmlFor="itemName">מוצר</label>
+                      <input id="itemName" {...register(`descriptionOfTheRequest.${index}.itemName`)} />
+                    </div>
 
-        <div className="form-control">
-          <label htmlFor="lastName"></label>
-          <input id="lastName" placeholder='lastName' {...register('businessDetails.lastName')} />
-        </div>
+                    <div className="form-control">
+                      <label htmlFor="color">צבע</label>
+                      <input id="color" {...register(`descriptionOfTheRequest.${index}.color`)} />
+                    </div>
 
+                    <div className="form-control">
+                      <label htmlFor="size">מידה</label>
+                      <input id="size" {...register(`descriptionOfTheRequest.${index}.size`)} />
+                    </div>
 
+                    <div className="form-control">
+                      <label htmlFor="kind">סוג</label>
+                      <select id="kind" {...register(`descriptionOfTheRequest.${index}.kind`)}>
+                        <option value="קרטונים">קרטונים</option>
+                        <option value="גלילים">גלילים</option>
+                      </select>
+                    </div>
 
+                    <div className="form-control">
+                      <label htmlFor="amount">כמות</label>
+                      <input type="number" id="amount" {...register(`descriptionOfTheRequest.${index}.amount`)} />
+                    </div>
 
+                    <td className="remove-trash-td"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></td>
 
-
-
-        {fields.map((field, index) => (
-          <div key={field.id} className="rublica-wrapper">
-
-            <div className="form-control">
-              <label htmlFor={`itemName${index}`}></label>
-              <input id={`itemName${index}`} placeholder='itemName' {...register(`descriptionOfTheRequest.${index}.itemName`)} />
+                  </div>
+                </>
+              ))}
+              <button type="button" className="add-product" onClick={() => addProduct()}>הוסף מוצר</button>
             </div>
 
+          </> : <>
+            <h3>תיאור הבקשה</h3>
+            <div className="white-container">
+              <table>
+                <tr>
+                  <th>כמות</th>
+                  <th>סוג</th>
+                  <th>מידה</th>
+                  <th>צבע</th>
+                  <th>מוצר</th>
+                </tr>
+                {fields.map((field, index) => (
+                  <tr key={field.id}>
+                    <td><input type="number" {...register(`descriptionOfTheRequest.${index}.amount`)} /></td>
+                    <td><textarea {...register(`descriptionOfTheRequest.${index}.size`)} /></td>
+                    <td><textarea {...register(`descriptionOfTheRequest.${index}.color`)} /></td>
+                    <td><textarea {...register(`descriptionOfTheRequest.${index}.itemName`)} /></td>
+                    <td><textarea {...register(`descriptionOfTheRequest.${index}.kind`)} /></td>
+                    <td className="remove-trash-td"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></td>
+                  </tr>
+                ))}
+              </table>
+              <button type="button" className="add-product" onClick={() => addProduct()}>הוסף מוצר</button>
+            </div>
+          </>}
 
+          <footer className="form-footer">
+            {/* Signer's name */}
             <div className="form-control">
-              <label htmlFor={`color${index}`}></label>
-              <input id={`color${index}`} value="#f6b73c" type="color" {...register(`descriptionOfTheRequest.${index}.color`)} />
+              <label htmlFor="signerName">שם ממלא הטופס</label>
+              <input id="signerName" {...register('signerName')} />
             </div>
 
-
+            {/* Message */}
             <div className="form-control">
-              <label htmlFor={`amount${index}`}></label>
-              <input id={`amount${index}`} placeholder='amount' type="number"  {...register(`descriptionOfTheRequest.${index}.amount`)} />
+              <label htmlFor="message">הערות</label>
+              <textarea className="message" id="message" {...register('message')} />
             </div>
+          </footer>
 
-            <div className="form-control">
-              <label htmlFor={`size${index}`}></label>
-              <input id={`size${index}`} placeholder='size' {...register(`descriptionOfTheRequest.${index}.size`)} />
-            </div>
+          {/* SUBMIT BUTTON */}
+          <button type="submit" className="submit">SUBMIT</button>
+        </form>
 
-            <button type="button" className='remove-button' onClick={() => removeFromList(index)}>Remove</button>
-          </div>
-        ))}
-
-        <div className="form-control">
+        {/* <div className="form-control">
           <label style={{ visibility: 'hidden' }} htmlFor="array"></label>
           <input style={{ visibility: 'hidden' }} id="array" placeholder='array' {...register('array')} />
-        </div>
+        </div>  */}
+      </div>
+    </LocalizationProvider>
 
-        <div className="buttons">
-          <button type="submit" className="submit">Submit</button>
-          <button type="button" className="add" onClick={() => appendToList()}>Add product</button>
-        </div>
-      </form> */}
-    </div>
   )
 }
 
