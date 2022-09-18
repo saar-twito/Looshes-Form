@@ -4,6 +4,14 @@
 $margin: 1.25rem 0 1.875rem 0;
 $padding: 1.25rem;
 
+.white-container {
+  background: $white;
+  box-shadow: 0px 0px 34px $shadowContainer;
+  @include flex();
+  margin: $margin;
+  padding: $padding;
+}
+
 .golden-tape-form-container {
   @include flex();
   padding-top: 1.5625rem;
@@ -132,14 +140,6 @@ th {
     border: 1.5px solid $label;
   }
   @include button();
-}
-
-.white-container {
-  background: $white;
-  box-shadow: 0px 0px 34px $shadowContainer;
-  @include flex();
-  margin: $margin;
-  padding: $padding;
 }
 
 @media only screen and (min-width: 550px) {

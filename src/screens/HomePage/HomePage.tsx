@@ -35,13 +35,13 @@ interface IAddOwner {
 
 
 interface FormValues {
-  date: string
+  date: Dayjs | null
   businessDetails: {
     companyName: string;
     companyPhone: string;
     email: string;
     companyOccupation: string;
-    bnNumber: string;
+    vatNumber: string;
     phonePersonal: string;
     faxNumber: string;
     companyAddress: string;
@@ -75,53 +75,54 @@ const HomePage = () => {
 
     businessDetails: Yup.object({
       companyName: Yup.string()
-        .test("is-company-name", "The company's name should be in Hebrew or English.", value => isAlphanumeric(`${value}`, 'en-US', { ignore: ' ' }) || isAlphanumeric(`${value}`, 'he', { ignore: ' ' }))
-        .max(50, "The company name should be max 50 characters.")
-        .min(1, "The company name should by a minimum 1 character.")
-        .required("A company name is required."),
+        .test("is-company-name", "עברית או אנגלית בלבד", value => isAlphanumeric(`${value}`, 'en-US', { ignore: ' ' }) || isAlphanumeric(`${value}`, 'he', { ignore: ' ' }))
+        .max(50, "שם החברה צריך להכיל עד 50 תווים")
+        .min(1, "שם החברה צריך להיות בעל תו אחד לפחות")
+        .required("נדרש למלא"),
 
       companyPhone: Yup.string()
-        .test("is-phone", "The company's phone should be in Israel or USA format.", value => isMobilePhone(`${value}`, ['he-IL', 'en-US']))
-        .required("The company's phone is required."),
+        .test("is-phone", `פורמט ישראל או ארה"ב בלבד`, value => isMobilePhone(`${value}`, ['he-IL', 'en-US']))
+        .required("נדרש למלא"),
 
       email: Yup.string()
-        .email("Invalid email address.")
-        .test("is-email", "Invalid email address.", value => isEmail(`${value}`))
-        .max(100, "Email address should be maxed 100 characters.")
-        .required("Email address is required."),
+        .email("כתובת אימייל לא חוקית")
+        .test("is-email", "כתובת אימייל לא חוקית", value => isEmail(`${value}`))
+        .max(100, `כתובת הדוא"ל צריכה להכיל עד 100 תווים`)
+        .required("נדרש למלא"),
 
       companyOccupation: Yup.string()
-        .max(100, "The company's Occupation should be maxed of 100 characters.")
-        .min(2, "The company's Occupation should be minimum of 2 characters.")
-        .required("Company's Occupation is required."),
+        .test("is-company-subject", "עברית או אנגלית בלבד", value => isAlphanumeric(`${value}`, 'en-US', { ignore: ' ' }) || isAlphanumeric(`${value}`, 'he', { ignore: ' ' }))
+        .max(100, "העיסוק של החברה צריך להיות עד 100 תווים")
+        .min(2, "העיסוק של החברה צריך להיות לפחות 2 תווים.")
+        .required("נדרש למלא"),
 
 
-      bnNumber: Yup.string()
-        .test("is-number", "bnNumber should be number", value => /^\d+$/.test(value as string))
-        .max(9, "bnNumber should be maxed  100 characters.")
-        .min(8, "bnNumber should be minimum 2 characters.")
-        .required("bnNumber is required."),
+      vatNumber: Yup.string()
+        .test("is-number", `רק מספרים נדרשים`, value => /^\d+$/.test(value as string))
+        .max(9, `עד 9 תווים`)
+        .min(8, `לפחות 8 תווים`)
+        .required("נדרש למלא"),
 
 
       phonePersonal: Yup.string()
-        .test("is-personal-phone", "A phone number should be in Hebrew or English format.", value => isMobilePhone(`${value}`, ['he-IL', 'en-US']))
-        .required("A phone number is required."),
+        .test("is-personal-phone", `פורמט ישראל או ארה"ב בלבד`, value => isMobilePhone(`${value}`, ['he-IL', 'en-US']))
+        .required("נדרש למלא"),
 
       faxNumber: Yup.string()
-        .test("is-fax-number", "The fax number should be in Hebrew or English format.", value => /^\d+$/.test(value as string))
-        .required("A fax number is required."),
+        .test("is-fax-number", "מספר פקס לא חוקי", value => /^\d+$/.test(value as string))
+        .required("נדרש למלא"),
 
       companyAddress: Yup.string()
-        .max(100, "The company's address should be maxed 100 characters.")
-        .min(2, "The company's address should be a minimum of 2 characters.")
-        .required("The company's address is required."),
+        .max(100, "עד 100 תווים")
+        .min(2, "לפחות 2 תווים")
+        .required("נדרש למלא"),
     }),
 
     descriptionOfTheRequest: Yup.array(
       Yup.object({
         itemName: Yup.string().optional(),
         color: Yup.string().optional(),
-        amount: Yup.string().optional().min(1),
+        amount: Yup.string().optional(),
         size: Yup.string().optional()
       })
     ),
@@ -129,26 +130,33 @@ const HomePage = () => {
     owners: Yup.array(
       Yup.object({
         firstName: Yup.string()
-          .test("is-first-name", "The first name should be in Hebrew or English.", value => isAlpha(`${value}`, 'en-US', { ignore: ' ' }) || isAlpha(`${value}`, 'he', { ignore: ' ' }))
-          .max(30, "The first name should be max 30 characters.")
-          .min(1, "The first name should be a minimum 1 character.")
-          .required("First name is required."),
+          .test("is-first-name", "עברית או אנגלית בלבד", value => isAlpha(`${value}`, 'en-US', { ignore: ' ' }) || isAlpha(`${value}`, 'he', { ignore: ' ' }))
+          .max(30, "עד 30 תווים")
+          .min(1, "לפחות תו אחד")
+          .required("נדרש למלא"),
 
         lastName: Yup.string()
-          .test("is-last-name", "The last name should be in Hebrew or English.", value => isAlpha(`${value}`, 'en-US', { ignore: ' ' }) || isAlpha(`${value}`, 'he', { ignore: ' ' }))
-          .max(30, "The last name should max be 30 characters.")
-          .min(1, "The last name should minimum be 1 character.")
-          .required("Last name is required."),
+          .test("is-last-name", "עברית או אנגלית בלבד", value => isAlpha(`${value}`, 'en-US', { ignore: ' ' }) || isAlpha(`${value}`, 'he', { ignore: ' ' }))
+          .max(30, "עד 30 תווים")
+          .min(1, "לפחות תו אחד")
+          .required("נדרש למלא"),
       })
     ),
 
     array: Yup.string().optional(),
-    signerName: Yup.string().min(1).max(30).required(),
+    signerName: Yup.string()
+      .min(2, "לפחות שני תווים")
+      .max(30, "עד 30 תווים")
+      .required("נדרש למלא"),
     message: Yup.string().max(300).optional(),
   })
 
   // useForm Will help us managing the form properties
   const { control, register, handleSubmit, formState: { errors } } = useForm<FormValues>({
+    mode: 'onBlur',
+    defaultValues: {
+      date: value
+    },
     resolver: yupResolver(formSchema) // resolver for yup to work with react-hook-form
   });
 
@@ -235,7 +243,6 @@ const HomePage = () => {
               <h3>פרטי העסק</h3>
               <div className="form-control">
                 <label htmlFor="date">תאריך</label>
-
                 {screenWidth < 500 ? <>
                   <MobileDatePicker
                     inputFormat="DD/MM/YYYY"
@@ -250,11 +257,12 @@ const HomePage = () => {
                     <DesktopDatePicker
                       inputFormat="DD/MM/YYYY"
                       value={value}
-                      closeOnSelect={false}
+                      closeOnSelect={true}
                       onChange={handleChange}
                       renderInput={(params) => <TextField {...params} />}
                     />
                   </>}
+                <p className="error">{errors.date?.message}</p>
               </div>
             </header>
 
@@ -264,6 +272,7 @@ const HomePage = () => {
               <div className="form-control">
                 <label htmlFor="companyName">שם החברה</label>
                 <input id="companyName" {...register("businessDetails.companyName")} />
+                <p className="error">{errors.businessDetails?.companyName?.message}</p>
               </div>
 
 
@@ -271,39 +280,47 @@ const HomePage = () => {
               <div className="form-control">
                 <label htmlFor="companyAddress">כתובת</label>
                 <input id="companyAddress" {...register('businessDetails.companyAddress')} />
+                <p className="error">{errors.businessDetails?.companyAddress?.message}</p>
               </div>
 
 
               {/* VAT NUMBER */}
               <div className="form-control">
-                <label htmlFor="bnNumber">ח.פ / עוסק מורשה</label>
-                <input id="bnNumber" {...register('businessDetails.bnNumber')} />
+                <label htmlFor="vatNumber">ח.פ / עוסק מורשה</label>
+                <input id="vatNumber" type='tel' {...register('businessDetails.vatNumber')} />
+                <p className="error">{errors.businessDetails?.vatNumber?.message}</p>
               </div>
 
 
               {/* COMPANY PHONE */}
               <div className="form-control">
                 <label htmlFor="companyPhone">מספר טלפון</label>
-                <input id="companyPhone" {...register('businessDetails.companyPhone')} />
+                <input id="companyPhone" type='tel' {...register('businessDetails.companyPhone')} />
+                <p className="error">{errors.businessDetails?.companyPhone?.message}</p>
               </div>
 
 
               {/* PHONE PERSONAL */}
               <div className="form-control">
                 <label htmlFor="phonePersonal">מספר סלולרי</label>
-                <input id="phonePersonal" {...register('businessDetails.phonePersonal')} />
+                <input id="phonePersonal" type='tel' {...register('businessDetails.phonePersonal')} />
+                <p className="error">{errors.businessDetails?.phonePersonal?.message}</p>
               </div>
+
 
               {/* FAX NUMBER */}
               <div className="form-control">
                 <label htmlFor="faxNumber">מספר פקס</label>
-                <input id="faxNumber" {...register('businessDetails.faxNumber')} />
+                <input id="faxNumber" type='tel' {...register('businessDetails.faxNumber')} />
+                <p className="error">{errors.businessDetails?.faxNumber?.message}</p>
               </div>
+
 
               {/* EMAIL */}
               <div className="form-control">
                 <label htmlFor="email">כתובת אימייל</label>
                 <input id="email" type="email" {...register('businessDetails.email')} />
+                <p className="error">{errors.businessDetails?.email?.message}</p>
               </div>
 
 
@@ -311,8 +328,8 @@ const HomePage = () => {
               <div className="form-control">
                 <label htmlFor="companyOccupation">עיסוק</label>
                 <input id="companyOccupation" {...register('businessDetails.companyOccupation')} />
+                <p className="error">{errors.businessDetails?.companyOccupation?.message}</p>
               </div>
-
             </div>
           </div>
 
@@ -327,8 +344,14 @@ const HomePage = () => {
               </tr>
               {fieldsss.map((field, index) => (
                 <tr key={field.id}>
-                  <td><input style={{ width: '100%' }} autoComplete="new-password" {...register(`owners.${index}.firstName`)} /></td>
-                  <td> <input style={{ width: '100%' }} autoComplete="new-password" {...register(`owners.${index}.lastName`)} /></td>
+                  <td>
+                    <input style={{ width: '100%' }} autoComplete="new-password" {...register(`owners.${index}.firstName`)} />
+                    <p className="error">{errors?.owners && errors?.owners[index]?.firstName?.message}</p>
+                  </td>
+                  <td>
+                    <input style={{ width: '100%' }} autoComplete="new-password" {...register(`owners.${index}.lastName`)} />
+                    <p className="error">{errors?.owners && errors?.owners[index]?.lastName?.message}</p>
+                  </td>
                   <td className="remove-trash-td"><AiOutlineUserDelete onClick={() => removeOwner(index)} className='remove-trash-icon' /></td>
                 </tr>
               ))}
@@ -376,7 +399,6 @@ const HomePage = () => {
                     </div>
 
                     <td className="remove-trash-td"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></td>
-
                   </div>
                 </>
               ))}
@@ -396,7 +418,10 @@ const HomePage = () => {
                 </tr>
                 {fields.map((field, index) => (
                   <tr key={field.id}>
-                    <td><input type="number" {...register(`descriptionOfTheRequest.${index}.amount`)} /></td>
+                    <td>
+                      <input type="number" {...register(`descriptionOfTheRequest.${index}.amount`)} />
+                      <p className="error">{errors?.descriptionOfTheRequest && errors?.descriptionOfTheRequest[index]?.amount?.message}</p>
+                    </td>
                     <td><textarea {...register(`descriptionOfTheRequest.${index}.size`)} /></td>
                     <td><textarea {...register(`descriptionOfTheRequest.${index}.color`)} /></td>
                     <td><textarea {...register(`descriptionOfTheRequest.${index}.itemName`)} /></td>
@@ -415,11 +440,14 @@ const HomePage = () => {
             </div>
           </>}
 
-          <footer className="form-footer">
+
+          <h3>שם ממלא הטופס</h3>
+          <footer className="white-container">
             {/* Signer's name */}
             <div className="form-control">
-              <label htmlFor="signerName">שם ממלא הטופס</label>
+              <label htmlFor="signerName">שם מלא</label>
               <input id="signerName" {...register('signerName')} />
+              <p className="error">{errors.signerName?.message}</p>
             </div>
 
             {/* Message */}
