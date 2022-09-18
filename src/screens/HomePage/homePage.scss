@@ -1,45 +1,32 @@
-@import '../../common/style/_colors.scss';
+@import "../../common/style/_colors.scss";
+@import "../../common/style/functions.scss";
 
-
-@mixin flex {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  gap: 15px;
-}
-
-
-@mixin flex2 {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  gap: 15px;
-}
-
-$margin: 2rem 0 3rem 0;
-$padding: 2rem;
-
-
-
+$margin: 1.25rem 0 1.875rem 0;
+$padding: 1.25rem;
 
 .golden-tape-form-container {
-@include flex2();
-  padding-top: 2.5rem;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  max-width: 60rem;
+  @include flex();
+  padding-top: 1.5625rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+    "Helvetica Neue", sans-serif;
+  max-width: 42.5rem;
   margin: 0 auto;
 
   .golden-tape-form-header {
-    @include flex2();
+    @include flex();
     text-align: center;
 
     img {
-      width: 13rem;
+      width: 8.125rem;
       margin: 0 auto;
     }
 
+    h1 {
+      font-size: 1.56rem;
+    }
+
     h2 {
-      font-size: 3rem;
+      font-size: 1.8rem;
       margin: $margin;
     }
   }
@@ -48,48 +35,42 @@ $padding: 2rem;
     padding: $padding;
 
     .business-details-container {
-      margin-bottom: 3rem;
+      margin-bottom: 1.875rem;
 
       .business-details-header {
         display: flex;
         flex-direction: row-reverse;
         justify-content: space-between;
         align-items: center;
+
+        .form-control-date {
+          width: 110px;
+        }
       }
     }
 
     .description-of-the-request-container {
       .products-list-for-small-screens {
-        border: 1px solid #cbcbcb;
+        border: 1px solid $borderOnEachProduct;
         padding: $padding;
         @include flex();
       }
     }
 
     .message {
-      border: 1.5px solid $allTextsBorder;
-      padding: .9rem;
-      outline: none;
-      direction: rtl;
-      width: -webkit-fill-available;
-      font-size: 1.6rem;
-      resize: none;
-      margin-bottom: 2rem;
+      @include inputSetUp();
+      margin-bottom: 1.25rem;
     }
 
     .submit {
-      background: $submit;
-      padding: .5rem 1.5rem;
-      font-style: normal;
-      font-weight: 600;
-      font-size: 2rem;
-      line-height: 2.6rem;
-      text-align: center;
-      text-transform: uppercase;
-      color: $black;
+      @include button();
+      font-size: 1.25rem;
       display: block;
+      background: $submit;
       border: none;
       margin: 0 auto;
+      width: 9.375rem;
+      padding: 10px;
     }
   }
 }
@@ -100,61 +81,62 @@ $padding: 2rem;
     color: $red;
   }
   .remove-trash-icon {
-    font-size: 2.5rem;
+    font-size: 1.5625rem;
     transition: color 0.2s ease;
     cursor: pointer;
   }
 }
 
 table {
-  font-family: arial, sans-serif;
   border-collapse: collapse;
-  font-size: 1.7rem;
+  font-size: 1rem;
+  margin: 0 auto;
 }
 
 td,
 th {
-  border: 1px solid #dddddd;
+  border: 1px solid $thBorder;
   text-align: left;
-  padding: .5rem;
+  padding: 0.3125rem;
   text-align: -webkit-right;
 
   input[type="number"] {
-    width: 4rem;
+    width: 2.5rem;
   }
   input[type="color"] {
-    width: 3rem;
+    width: 1.875rem;
   }
   input,
-  textarea {
-    width: 8rem;
-    font-size: 1.6rem;
+  textarea,
+  select {
+    width: 5rem;
+    font-size: 1rem;
     border: none;
     outline: none;
     resize: none;
+    direction: rtl;
   }
 }
 
 th {
-  background: #f3f3f4;
-  color: #838383;
+  background: $thBackground;
+  color: $thColorText;
 }
 .add-product {
   border: 1.5px solid $black;
   background-color: $white;
-  padding: .5rem 1.5rem;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 1.6rem;
-  line-height: 2.6rem;
-  text-align: center;
-  text-transform: uppercase;
-  color: $black;
+  font-size: 1rem;
+  &:hover {
+    background: $label;
+    color: $white;
+    border: 1.5px solid $label;
+  }
+  @include button();
 }
 
 .white-container {
   background: $white;
-  box-shadow: 0px 0px 34px rgba(0, 0, 0, 0.08);
+  box-shadow: 0px 0px 34px $shadowContainer;
   @include flex();
   margin: $margin;
   padding: $padding;
@@ -165,8 +147,10 @@ th {
     width: 100% !important;
   }
 
-  .white-container {
-    flex-direction: row;
-    flex-wrap: wrap;
+  .business-details-container {
+    .white-container {
+      flex-direction: row-reverse;
+      flex-wrap: wrap;
+    }
   }
 }

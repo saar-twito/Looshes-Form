@@ -1,0 +1,30 @@
+@mixin flex {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  gap: 15px;
+}
+
+@mixin inputSetUp {
+  border: 1.5px solid $allTextsBorder;
+  padding: 9px;
+  outline: none;
+  direction: rtl;
+  width: -webkit-fill-available;
+  font-size: 1rem;
+  resize: none;
+}
+
+@mixin button {
+  padding: 0.3125rem 0.9375rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.625rem;
+  text-align: center;
+  text-transform: uppercase;
+  color: $black;
+  width: 8.125rem;
+  margin: 0 auto;
+  cursor: pointer;
+  transition: all 0.2s;
+}

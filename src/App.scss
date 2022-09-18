@@ -1,4 +1,5 @@
 @import "./common/style/_colors.scss";
+@import "./common/style/functions.scss";
 /* Basic setup */
 *,
 *::before,
@@ -8,10 +9,6 @@
     margin: 0;
 }
 
-html {
-    font-size: 62.5%;
-}
-
 /* General rules */
 .form-control {
     display: flex;
@@ -19,12 +16,8 @@ html {
     align-items: end;
     gap: 3px;
 
-    .form-control-date {
-        width: 13rem !important;
-    }
-
     label {
-        font-size: 1.5rem;
+        font-size: 0.9375rem;
         color: $label;
         font-weight: 600;
     }
@@ -33,33 +26,17 @@ html {
     select,
     textarea,
     fieldset {
-        border: 1.5px solid $allTextsBorder;
-        padding: 9px;
-        outline: none;
-        direction: rtl;
-        width: -webkit-fill-available;
-        font-size: 1.6rem;
-        resize: none;
+        @include inputSetUp();
     }
 }
 
 h3 {
-    font-size: 2.2rem;
-    direction: rtl;
+    font-size: 24px;
+    text-align: right;
 }
 
 h1,
 h2,
 h3 {
     color: $allHeaders;
-}
-
-button {
-    cursor: pointer;
-    transition: all 0.2s;
-    &:hover {
-        background: $label;
-        color: $white;
-        border: 1px solid $label;
-    }
 }

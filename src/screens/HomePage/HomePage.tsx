@@ -121,7 +121,7 @@ const HomePage = () => {
       Yup.object({
         itemName: Yup.string().optional(),
         color: Yup.string().optional(),
-        amount: Yup.string().optional(),
+        amount: Yup.string().optional().min(1),
         size: Yup.string().optional()
       })
     ),
@@ -148,7 +148,7 @@ const HomePage = () => {
   })
 
   // useForm Will help us managing the form properties
-  const { control, register, handleSubmit, formState: { errors }, watch } = useForm<FormValues>({
+  const { control, register, handleSubmit, formState: { errors } } = useForm<FormValues>({
     resolver: yupResolver(formSchema) // resolver for yup to work with react-hook-form
   });
 
@@ -222,7 +222,7 @@ const HomePage = () => {
         <header className="golden-tape-form-header">
           <img src={logo} alt="" />
           <h1>Golden Tape Ltd</h1>
-          <h2>טופס לקוח חדש</h2>
+          <h2>טופס בקשה להצעת מחיר</h2>
         </header>
 
         {/* Form */}
@@ -344,7 +344,7 @@ const HomePage = () => {
 
               {fields.map((field, index) => (
                 <>
-                {/* SMALL SCREENS */}
+                  {/* SMALL SCREENS */}
                   <div key={field.id} className="products-list-for-small-screens">
 
                     <div className="form-control">
@@ -400,7 +400,13 @@ const HomePage = () => {
                     <td><textarea {...register(`descriptionOfTheRequest.${index}.size`)} /></td>
                     <td><textarea {...register(`descriptionOfTheRequest.${index}.color`)} /></td>
                     <td><textarea {...register(`descriptionOfTheRequest.${index}.itemName`)} /></td>
-                    <td><textarea {...register(`descriptionOfTheRequest.${index}.kind`)} /></td>
+                    <td>
+                      <select id="kind" {...register(`descriptionOfTheRequest.${index}.kind`)}>
+                        <option value="קרטונים">קרטונים</option>
+                        <option value="גלילים">גלילים</option>
+                      </select>
+                    </td>
+
                     <td className="remove-trash-td"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></td>
                   </tr>
                 ))}
@@ -424,7 +430,7 @@ const HomePage = () => {
           </footer>
 
           {/* SUBMIT BUTTON */}
-          <button type="submit" className="submit">SUBMIT</button>
+          <button type="submit" className="submit">שלח</button>
         </form>
 
         {/* <div className="form-control">
