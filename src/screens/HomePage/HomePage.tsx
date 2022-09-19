@@ -2,63 +2,31 @@ import './homePage.scss'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { AiOutlineUserDelete } from "react-icons/ai";
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { formSchema } from './formSchema';
+import { FormValues } from './interfaces';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { RiDeleteBinLine } from "react-icons/ri";
-import { useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
+import { useEffect, useRef, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
 import dayjs, { Dayjs } from 'dayjs';
-import isAlpha from "validator/lib/isAlpha";
-import isAlphanumeric from "validator/lib/isAlphanumeric";
-import isEmail from "validator/lib/isEmail";
-import isMobilePhone from "validator/lib/isMobilePhone";
+import FormControl from 'common/FormControl/FormControl';
 import logo from 'assets/logo.webp'
 import TextField from '@mui/material/TextField';
 import UseWindowSize from 'common/hooks/UseWindowsSize';
 
 
 
-interface IAddProduct {
-  itemName: "",
-  color: "",
-  amount: "",
-  size: ""
-  kind: "",
-}
-
-interface IAddOwner {
-  firstName: "",
-  lastName: "",
-}
-
-
-interface FormValues {
-  date: Dayjs | null
-  businessDetails: {
-    companyName: string;
-    companyPhone: string;
-    email: string;
-    companyOccupation: string;
-    vatNumber: string;
-    phonePersonal: string;
-    faxNumber: string;
-    companyAddress: string;
-  }
-  descriptionOfTheRequest: IAddProduct[];
-  owners: IAddOwner[]
-  array: string[];
-  signerName: string;
-  message: string;
-};
-
-
 const HomePage = () => {
+  const [isSending, setIsSending] = useState<boolean>(false)
   const [, screenWidth] = UseWindowSize();
-  const [value, setValue] = useState<Dayjs | null>(
-    dayjs(new Date()),
-  );
+  const [date, setOfDate] = useState<Dayjs | null>(() => dayjs(new Date()));
+  const form = useRef<any>();
+  const navigate = useNavigate()
+
 
   useEffect(() => {
     addProduct();
@@ -66,103 +34,23 @@ const HomePage = () => {
   }, [])
 
   const handleChange = (newValue: Dayjs | null) => {
-    setValue(newValue);
+    setOfDate(newValue);
   };
 
-  // FORM SCHEMA WITH YUP
-  const formSchema = Yup.object({
-    date: Yup.string().required(),
 
-    businessDetails: Yup.object({
-      companyName: Yup.string()
-        .test("is-company-name", "עברית או אנגלית בלבד", value => isAlphanumeric(`${value}`, 'en-US', { ignore: ' ' }) || isAlphanumeric(`${value}`, 'he', { ignore: ' ' }))
-        .max(50, "שם החברה צריך להכיל עד 50 תווים")
-        .min(1, "שם החברה צריך להיות בעל תו אחד לפחות")
-        .required("נדרש למלא"),
-
-      companyPhone: Yup.string()
-        .test("is-phone", `פורמט ישראל או ארה"ב בלבד`, value => isMobilePhone(`${value}`, ['he-IL', 'en-US']))
-        .required("נדרש למלא"),
-
-      email: Yup.string()
-        .email("כתובת אימייל לא חוקית")
-        .test("is-email", "כתובת אימייל לא חוקית", value => isEmail(`${value}`))
-        .max(100, `כתובת הדוא"ל צריכה להכיל עד 100 תווים`)
-        .required("נדרש למלא"),
-
-      companyOccupation: Yup.string()
-        .test("is-company-subject", "עברית או אנגלית בלבד", value => isAlphanumeric(`${value}`, 'en-US', { ignore: ' ' }) || isAlphanumeric(`${value}`, 'he', { ignore: ' ' }))
-        .max(100, "העיסוק של החברה צריך להיות עד 100 תווים")
-        .min(2, "העיסוק של החברה צריך להיות לפחות 2 תווים.")
-        .required("נדרש למלא"),
-
-
-      vatNumber: Yup.string()
-        .test("is-number", `רק מספרים נדרשים`, value => /^\d+$/.test(value as string))
-        .max(9, `עד 9 תווים`)
-        .min(8, `לפחות 8 תווים`)
-        .required("נדרש למלא"),
-
-
-      phonePersonal: Yup.string()
-        .test("is-personal-phone", `פורמט ישראל או ארה"ב בלבד`, value => isMobilePhone(`${value}`, ['he-IL', 'en-US']))
-        .required("נדרש למלא"),
-
-      faxNumber: Yup.string()
-        .test("is-fax-number", "מספר פקס לא חוקי", value => /^\d+$/.test(value as string))
-        .required("נדרש למלא"),
-
-      companyAddress: Yup.string()
-        .max(100, "עד 100 תווים")
-        .min(2, "לפחות 2 תווים")
-        .required("נדרש למלא"),
-    }),
-
-    descriptionOfTheRequest: Yup.array(
-      Yup.object({
-        itemName: Yup.string().optional(),
-        color: Yup.string().optional(),
-        amount: Yup.string().optional(),
-        size: Yup.string().optional()
-      })
-    ),
-
-    owners: Yup.array(
-      Yup.object({
-        firstName: Yup.string()
-          .test("is-first-name", "עברית או אנגלית בלבד", value => isAlpha(`${value}`, 'en-US', { ignore: ' ' }) || isAlpha(`${value}`, 'he', { ignore: ' ' }))
-          .max(30, "עד 30 תווים")
-          .min(1, "לפחות תו אחד")
-          .required("נדרש למלא"),
-
-        lastName: Yup.string()
-          .test("is-last-name", "עברית או אנגלית בלבד", value => isAlpha(`${value}`, 'en-US', { ignore: ' ' }) || isAlpha(`${value}`, 'he', { ignore: ' ' }))
-          .max(30, "עד 30 תווים")
-          .min(1, "לפחות תו אחד")
-          .required("נדרש למלא"),
-      })
-    ),
-
-    array: Yup.string().optional(),
-    signerName: Yup.string()
-      .min(2, "לפחות שני תווים")
-      .max(30, "עד 30 תווים")
-      .required("נדרש למלא"),
-    message: Yup.string().max(300).optional(),
-  })
 
   // useForm Will help us managing the form properties
-  const { control, register, handleSubmit, formState: { errors } } = useForm<FormValues>({
+  const { control, register, handleSubmit, formState: { errors, }, reset, } = useForm<FormValues>({
     mode: 'onBlur',
     defaultValues: {
-      date: value
+      date: date
     },
     resolver: yupResolver(formSchema) // resolver for yup to work with react-hook-form
   });
 
   const { fields, prepend, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
-    name: "descriptionOfTheRequest", // The name of the array
+    name: "product", // The name of the array
   });
 
   const { fields: fieldsss, prepend: add, remove: removee } = useFieldArray({
@@ -171,27 +59,41 @@ const HomePage = () => {
   });
 
   /* onSubmit form */
-  const onSubmit = handleSubmit(async (data: FormValues) => {
+  const onSubmit = handleSubmit(async () => {
+    setIsSending(true)
 
-    for (let i = 0; i < data.descriptionOfTheRequest.length; i++) {
-      const { amount, color, itemName, size } = data.descriptionOfTheRequest[i]
-      if (!amount || !color || !itemName || !size) { // if one property of the rublica is empty.
-        data.descriptionOfTheRequest.splice(i, 1)
+    /* Date  */
+    form.current[0].value = date;
+    form.current[0].name = 'Date of submission';
+
+    /* Business Details */
+    form.current[3].name = `Company's name`;
+    form.current[4].name = `Company's adders`;
+    form.current[5].name = `Company's var number`;
+    form.current[6].name = `Company's phone number`;
+    form.current[7].name = `Mobile phone number`;
+    form.current[8].name = `Company's fax number`;
+    form.current[9].name = `Company's Email adders`;
+    form.current[10].name = `Company's occupation`;
+
+    const handelFormSubmissionError = () => {
+      toast.error("אנא צרו איתנו קשר טלפוני");
+      setIsSending(false)
+    };
+
+    fetch('https://formspree.io/f/maykelbr', {
+      method: 'POST',
+      // @ts-ignore
+      body: new FormData(form.current),
+      headers: { 'Accept': 'application/json' }
+    }).then(response => {
+      if (response.ok) {
+        reset();
+        navigate(`/formSubmission`)
       }
-    }
+      else handelFormSubmissionError();
 
-
-    for (let i = 0; i < data.owners.length; i++) {
-      const { firstName, lastName } = data.owners[i]
-      if (!firstName || !lastName) { // if one property of the rublica is empty.
-        data.owners.splice(i, 1)
-      }
-    }
-
-    data.array = data.descriptionOfTheRequest.map((item, index) => {
-      return `${index} - item name: ${item.itemName}, size: ${item.size}, color: ${item.color}, amount:${item.amount} `
-    })
-    console.log(data);
+    }).catch(() => handelFormSubmissionError())
   })
 
 
@@ -200,11 +102,6 @@ const HomePage = () => {
       firstName: "",
       lastName: "",
     })
-  }
-
-
-  const removeOwner = (index: number) => {
-    removee(index)
   }
 
   const addProduct = () => {
@@ -217,10 +114,8 @@ const HomePage = () => {
     })
   }
 
-  const removeProduct = (index: number) => {
-    remove(index)
-  }
-
+  const removeOwner = (index: number) => removee(index)
+  const removeProduct = (index: number) => remove(index)
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -234,7 +129,7 @@ const HomePage = () => {
         </header>
 
         {/* Form */}
-        <form onSubmit={onSubmit} autoComplete="off">
+        <form ref={form} onSubmit={onSubmit} autoComplete="off">
 
           {/* Business Details Section */}
           <div className="business-details-container">
@@ -245,8 +140,9 @@ const HomePage = () => {
                 <label htmlFor="date">תאריך</label>
                 {screenWidth < 500 ? <>
                   <MobileDatePicker
+                    {...register("date")}
                     inputFormat="DD/MM/YYYY"
-                    value={value}
+                    value={date}
                     closeOnSelect={true}
                     onChange={handleChange}
                     className="form-control-date"
@@ -255,8 +151,9 @@ const HomePage = () => {
                 </> :
                   <>
                     <DesktopDatePicker
+                      {...register("date")}
                       inputFormat="DD/MM/YYYY"
-                      value={value}
+                      value={date}
                       closeOnSelect={true}
                       onChange={handleChange}
                       renderInput={(params) => <TextField {...params} />}
@@ -269,67 +166,83 @@ const HomePage = () => {
             <div className="white-container">
 
               {/* COMPANY NAME */}
-              <div className="form-control">
-                <label htmlFor="companyName">שם החברה</label>
-                <input id="companyName" {...register("businessDetails.companyName")} />
-                <p className="error">{errors.businessDetails?.companyName?.message}</p>
-              </div>
+              <FormControl
+                htmlFor='companyName'
+                label='שם החברה'
+                register={register}
+                registerName="businessDetails.companyName"
+                errorMessage={errors.businessDetails?.companyName?.message} />
 
 
               {/* COMPANY ADDRESS */}
-              <div className="form-control">
-                <label htmlFor="companyAddress">כתובת</label>
-                <input id="companyAddress" {...register('businessDetails.companyAddress')} />
-                <p className="error">{errors.businessDetails?.companyAddress?.message}</p>
-              </div>
+              <FormControl
+                htmlFor='companyAddress'
+                label='כתובת'
+                register={register}
+                registerName="businessDetails.companyAddress"
+                errorMessage={errors.businessDetails?.companyAddress?.message} />
 
 
               {/* VAT NUMBER */}
-              <div className="form-control">
-                <label htmlFor="vatNumber">ח.פ / עוסק מורשה</label>
-                <input id="vatNumber" type='tel' {...register('businessDetails.vatNumber')} />
-                <p className="error">{errors.businessDetails?.vatNumber?.message}</p>
-              </div>
+              <FormControl
+                htmlFor='vatNumber'
+                inputType='tel'
+                label='ח.פ / עוסק מורשה'
+                register={register}
+                registerName="businessDetails.vatNumber"
+                errorMessage={errors.businessDetails?.vatNumber?.message} />
 
 
               {/* COMPANY PHONE */}
-              <div className="form-control">
-                <label htmlFor="companyPhone">מספר טלפון</label>
-                <input id="companyPhone" type='tel' {...register('businessDetails.companyPhone')} />
-                <p className="error">{errors.businessDetails?.companyPhone?.message}</p>
-              </div>
+              <FormControl
+                htmlFor='companyPhone'
+                label="(-) מספר טלפון ללא"
+                register={register}
+                registerName="businessDetails.companyPhone"
+                inputType='tel'
+                placeholder="085740487"
+                errorMessage={errors.businessDetails?.companyPhone?.message} />
 
 
               {/* PHONE PERSONAL */}
-              <div className="form-control">
-                <label htmlFor="phonePersonal">מספר סלולרי</label>
-                <input id="phonePersonal" type='tel' {...register('businessDetails.phonePersonal')} />
-                <p className="error">{errors.businessDetails?.phonePersonal?.message}</p>
-              </div>
+              <FormControl
+                htmlFor='phonePersonal'
+                label="(-) מספר סלולרי ללא"
+                register={register}
+                registerName="businessDetails.phonePersonal"
+                inputType='tel'
+                placeholder="0502387677"
+                errorMessage={errors.businessDetails?.phonePersonal?.message} />
 
 
               {/* FAX NUMBER */}
-              <div className="form-control">
-                <label htmlFor="faxNumber">מספר פקס</label>
-                <input id="faxNumber" type='tel' {...register('businessDetails.faxNumber')} />
-                <p className="error">{errors.businessDetails?.faxNumber?.message}</p>
-              </div>
+              <FormControl
+                htmlFor='faxNumber'
+                label="(-) מספר טלפון ללא"
+                register={register}
+                registerName="businessDetails.faxNumber"
+                inputType='tel'
+                placeholder='035740487'
+                errorMessage={errors.businessDetails?.faxNumber?.message} />
 
 
               {/* EMAIL */}
-              <div className="form-control">
-                <label htmlFor="email">כתובת אימייל</label>
-                <input id="email" type="email" {...register('businessDetails.email')} />
-                <p className="error">{errors.businessDetails?.email?.message}</p>
-              </div>
+              <FormControl
+                htmlFor='email'
+                label="כתובת אימייל"
+                register={register}
+                registerName="businessDetails.email"
+                inputType='email'
+                errorMessage={errors.businessDetails?.email?.message} />
 
 
               {/* COMPANY OCCUPATION */}
-              <div className="form-control">
-                <label htmlFor="companyOccupation">עיסוק</label>
-                <input id="companyOccupation" {...register('businessDetails.companyOccupation')} />
-                <p className="error">{errors.businessDetails?.companyOccupation?.message}</p>
-              </div>
+              <FormControl
+                htmlFor='companyOccupation'
+                label="עיסוק"
+                register={register}
+                registerName="businessDetails.companyOccupation"
+                errorMessage={errors.businessDetails?.companyOccupation?.message} />
             </div>
           </div>
 
@@ -338,23 +251,36 @@ const HomePage = () => {
           <h3>פרטי בעל\י החברה</h3>
           <div className="white-container">
             <table>
-              <tr>
-                <th>שם משפחה</th>
-                <th>שם פרטי</th>
-              </tr>
-              {fieldsss.map((field, index) => (
-                <tr key={field.id}>
-                  <td>
-                    <input style={{ width: '100%' }} autoComplete="new-password" {...register(`owners.${index}.firstName`)} />
-                    <p className="error">{errors?.owners && errors?.owners[index]?.firstName?.message}</p>
-                  </td>
-                  <td>
-                    <input style={{ width: '100%' }} autoComplete="new-password" {...register(`owners.${index}.lastName`)} />
-                    <p className="error">{errors?.owners && errors?.owners[index]?.lastName?.message}</p>
-                  </td>
-                  <td className="remove-trash-td"><AiOutlineUserDelete onClick={() => removeOwner(index)} className='remove-trash-icon' /></td>
+              <thead>
+                <tr>
+                  <th>שם משפחה</th>
+                  <th>שם פרטי</th>
                 </tr>
-              ))}
+              </thead>
+              <tbody>
+                {fieldsss.map((field, index) => (
+                  <tr className="owners-table" key={field.id}>
+                    <td>
+                      <label htmlFor={`owners.${index}.firstName`}></label>
+                      <input
+                        id={`owners.${index}.firstName`}
+                        autoComplete="new-password"
+                        {...register(`owners.${index}.firstName`)} />
+                      <p className="error">{errors?.owners && errors?.owners[index]?.firstName?.message}</p>
+                    </td>
+                    <td>
+                      <label htmlFor={`owners.${index}.lastName`}></label>
+                      <input
+                        id={`owners.${index}.lastName`}
+                        autoComplete="new-password"
+                        {...register(`owners.${index}.lastName`)} />
+                      <p className="error">{errors?.owners && errors?.owners[index]?.lastName?.message}</p>
+                    </td>
+                    <td className="remove-trash-td"><AiOutlineUserDelete onClick={() => removeOwner(index)} className='remove-trash-icon' /></td>
+                  </tr>
+                ))}
+              </tbody>
+
             </table>
             <button type="button" className="add-product" onClick={() => addOwner()}>הוסף בעלים</button>
           </div>
@@ -363,44 +289,55 @@ const HomePage = () => {
           {/* DESCRIPTION OF THE REQUEST SECTION */}
           {screenWidth < 500 ? <>
             <h3>תיאור הבקשה</h3>
-            <div className="description-of-the-request-container white-container">
+            <div className="product-container product-table white-container">
 
               {fields.map((field, index) => (
-                <>
+                <div key={field.id}>
                   {/* SMALL SCREENS */}
-                  <div key={field.id} className="products-list-for-small-screens">
+                  <div className="products-list-for-small-screens">
+
+                    {/* product.itemName */}
+                    <FormControl
+                      htmlFor={`product.${index}.itemName`}
+                      label="מוצר"
+                      register={register}
+                      registerName={`product.${index}.itemName`}
+                      errorMessage={errors?.product && errors?.product[index]?.itemName?.message} />
+
+
+                    {/* product.itemName */}
+                    <FormControl
+                      htmlFor={`product.${index}.color`}
+                      label="צבע"
+                      register={register}
+                      registerName={`product.${index}.color`}
+                      errorMessage={errors?.product && errors?.product[index]?.color?.message} />
+
+                    {/* product.size */}
+                    <FormControl
+                      htmlFor={`product.${index}.size`}
+                      label="מידה"
+                      register={register}
+                      registerName={`product.${index}.size`}
+                      errorMessage={errors?.product && errors?.product[index]?.size?.message} />
+
 
                     <div className="form-control">
-                      <label htmlFor="itemName">מוצר</label>
-                      <input id="itemName" {...register(`descriptionOfTheRequest.${index}.itemName`)} />
-                    </div>
-
-                    <div className="form-control">
-                      <label htmlFor="color">צבע</label>
-                      <input id="color" {...register(`descriptionOfTheRequest.${index}.color`)} />
-                    </div>
-
-                    <div className="form-control">
-                      <label htmlFor="size">מידה</label>
-                      <input id="size" {...register(`descriptionOfTheRequest.${index}.size`)} />
-                    </div>
-
-                    <div className="form-control">
-                      <label htmlFor="kind">סוג</label>
-                      <select id="kind" {...register(`descriptionOfTheRequest.${index}.kind`)}>
+                      <label htmlFor={`product.${index}.kind`}>סוג</label>
+                      <select id={`product.${index}.kind`} {...register(`product.${index}.kind`)}>
                         <option value="קרטונים">קרטונים</option>
                         <option value="גלילים">גלילים</option>
                       </select>
                     </div>
 
                     <div className="form-control">
-                      <label htmlFor="amount">כמות</label>
-                      <input type="number" id="amount" {...register(`descriptionOfTheRequest.${index}.amount`)} />
+                      <label htmlFor={`product.${index}.amount`}>כמות</label>
+                      <input type="number" min="0" max="100" id={`product.${index}.amount`} {...register(`product.${index}.amount`)} />
                     </div>
 
                     <td className="remove-trash-td"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></td>
                   </div>
-                </>
+                </div>
               ))}
               <button type="button" className="add-product" onClick={() => addProduct()}>הוסף מוצר</button>
             </div>
@@ -409,65 +346,79 @@ const HomePage = () => {
             <h3>תיאור הבקשה</h3>
             <div className="white-container">
               <table>
-                <tr>
-                  <th>כמות</th>
-                  <th>סוג</th>
-                  <th>מידה</th>
-                  <th>צבע</th>
-                  <th>מוצר</th>
-                </tr>
-                {fields.map((field, index) => (
-                  <tr key={field.id}>
-                    <td>
-                      <input type="number" {...register(`descriptionOfTheRequest.${index}.amount`)} />
-                      <p className="error">{errors?.descriptionOfTheRequest && errors?.descriptionOfTheRequest[index]?.amount?.message}</p>
-                    </td>
-                    <td><textarea {...register(`descriptionOfTheRequest.${index}.size`)} /></td>
-                    <td><textarea {...register(`descriptionOfTheRequest.${index}.color`)} /></td>
-                    <td><textarea {...register(`descriptionOfTheRequest.${index}.itemName`)} /></td>
-                    <td>
-                      <select id="kind" {...register(`descriptionOfTheRequest.${index}.kind`)}>
-                        <option value="קרטונים">קרטונים</option>
-                        <option value="גלילים">גלילים</option>
-                      </select>
-                    </td>
-
-                    <td className="remove-trash-td"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></td>
+                <thead>
+                  <tr>
+                    <th>כמות</th>
+                    <th>סוג</th>
+                    <th>מידה</th>
+                    <th>צבע</th>
+                    <th>מוצר</th>
                   </tr>
-                ))}
+                </thead>
+                <tbody>
+                  {fields.map((field, index) => (
+                    <tr key={field.id}>
+                      <td>
+                        <label htmlFor={`product.${index}.amount`}></label>
+                        <input id={`product.${index}.amount`} type="number" min="0" max="100" {...register(`product.${index}.amount`)} />
+                        <p className="error">{errors?.product && errors?.product[index]?.amount?.message}</p>
+                      </td>
+                      <td>
+                        <select id={`product.${index}.kind`} {...register(`product.${index}.kind`)}>
+                          <option value="קרטונים">קרטונים</option>
+                          <option value="גלילים">גלילים</option>
+                        </select>
+                      </td>
+                      <td>
+                        <label htmlFor={`product.${index}.size`}></label>
+                        <textarea id={`product.${index}.size`} {...register(`product.${index}.size`)} />
+                      </td>
+                      <td>
+                        <label htmlFor={`product.${index}.color`}></label>
+                        <textarea id={`product.${index}.color`} {...register(`product.${index}.color`)} />
+                      </td>
+
+                      <td>
+                        <label htmlFor={`product.${index}.itemName`}></label>
+                        <textarea id={`product.${index}.itemName`} {...register(`product.${index}.itemName`)} />
+                      </td>
+
+                      <td className="remove-trash-td"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></td>
+                    </tr>
+                  ))}
+                </tbody>
+
               </table>
               <button type="button" className="add-product" onClick={() => addProduct()}>הוסף מוצר</button>
             </div>
           </>}
 
-
           <h3>שם ממלא הטופס</h3>
           <footer className="white-container">
             {/* Signer's name */}
-            <div className="form-control">
-              <label htmlFor="signerName">שם מלא</label>
-              <input id="signerName" {...register('signerName')} />
-              <p className="error">{errors.signerName?.message}</p>
-            </div>
+            <FormControl
+              htmlFor='signerName'
+              label="שם מלא"
+              register={register}
+              registerName="signerName"
+              errorMessage={errors.signerName?.message} />
+
 
             {/* Message */}
-            <div className="form-control">
-              <label htmlFor="message">הערות</label>
-              <textarea className="message" id="message" {...register('message')} />
-            </div>
+            <FormControl
+              htmlFor='message'
+              label="הערות"
+              register={register}
+              registerName="message"
+              errorMessage={errors.message?.message} />
+
           </footer>
 
           {/* SUBMIT BUTTON */}
-          <button type="submit" className="submit">שלח</button>
+          <button type="submit" className="submit">{isSending ? "...שולח" : "שלח"}</button>
         </form>
-
-        {/* <div className="form-control">
-          <label style={{ visibility: 'hidden' }} htmlFor="array"></label>
-          <input style={{ visibility: 'hidden' }} id="array" placeholder='array' {...register('array')} />
-        </div>  */}
       </div>
     </LocalizationProvider>
-
   )
 }
 
