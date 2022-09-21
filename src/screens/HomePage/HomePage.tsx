@@ -9,16 +9,14 @@ import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { RiDeleteBinLine } from "react-icons/ri";
 import { toast } from 'react-toastify';
 import { useEffect, useRef, useState } from 'react';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import dayjs, { Dayjs } from 'dayjs';
 import FormControl from 'common/FormControl/FormControl';
-import logo from 'assets/logo.webp'
+import logo from 'assets/logo.svg'
 import TextField from '@mui/material/TextField';
 import UseWindowSize from 'common/hooks/UseWindowsSize';
-
-
 
 const HomePage = () => {
   const [isSending, setIsSending] = useState<boolean>(false)
@@ -26,6 +24,7 @@ const HomePage = () => {
   const [date, setOfDate] = useState<Dayjs | null>(() => dayjs(new Date()));
   const form = useRef<any>();
   const navigate = useNavigate()
+
 
 
   useEffect(() => {
@@ -59,41 +58,32 @@ const HomePage = () => {
   });
 
   /* onSubmit form */
-  const onSubmit = handleSubmit(async () => {
+  const onSubmit: SubmitHandler<FormValues> = (async (data) => {
     setIsSending(true)
 
     /* Date  */
     form.current[0].value = date;
     form.current[0].name = 'Date of submission';
 
-    /* Business Details */
-    form.current[3].name = `Company's name`;
-    form.current[4].name = `Company's adders`;
-    form.current[5].name = `Company's var number`;
-    form.current[6].name = `Company's phone number`;
-    form.current[7].name = `Mobile phone number`;
-    form.current[8].name = `Company's fax number`;
-    form.current[9].name = `Company's Email adders`;
-    form.current[10].name = `Company's occupation`;
-
     const handelFormSubmissionError = () => {
       toast.error("אנא צרו איתנו קשר טלפוני");
       setIsSending(false)
     };
 
-    fetch('https://formspree.io/f/maykelbr', {
-      method: 'POST',
-      // @ts-ignore
-      body: new FormData(form.current),
-      headers: { 'Accept': 'application/json' }
-    }).then(response => {
-      if (response.ok) {
-        reset();
-        navigate(`/formSubmission`)
-      }
-      else handelFormSubmissionError();
+    // fetch('https://formspree.io/f/maykelbr', {
+    //   method: 'POST',
+    //   // @ts-ignore
+    //   body: new FormData(form.current),
+    //   headers: { 'Accept': 'application/json' }
+    // }).then(response => {
+    //   if (response.ok) {
+    //     reset();
+    //     navigate(`/formSubmission`)
+    //   }
+    //   else handelFormSubmissionError();
 
-    }).catch(() => handelFormSubmissionError())
+    // }).catch(() => handelFormSubmissionError())
+
   })
 
 
@@ -124,12 +114,11 @@ const HomePage = () => {
         {/* Page Header */}
         <header className="golden-tape-form-header">
           <img src={logo} alt="" />
-          <h1>Golden Tape Ltd</h1>
           <h2>טופס בקשה להצעת מחיר</h2>
         </header>
 
         {/* Form */}
-        <form ref={form} onSubmit={onSubmit} autoComplete="off">
+        <form ref={form} onSubmit={handleSubmit(onSubmit)} autoComplete="off">
 
           {/* Business Details Section */}
           <div className="business-details-container">
@@ -415,7 +404,7 @@ const HomePage = () => {
           </footer>
 
           {/* SUBMIT BUTTON */}
-          <button type="submit" className="submit">{isSending ? "...שולח" : "שלח"}</button>
+          <button type="submit" disabled={isSending} className="submit">{isSending ? "...שולח" : "שלח"}</button>
         </form>
       </div>
     </LocalizationProvider>

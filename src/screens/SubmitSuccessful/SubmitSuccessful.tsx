@@ -1,5 +1,5 @@
 
-import logo from '../../assets/logo.webp';
+import logo from 'assets/logo.svg';
 import './submitSuccessful.scss'
 
 

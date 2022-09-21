@@ -23,7 +23,7 @@ $padding: 1.25rem;
     text-align: center;
 
     img {
-      width: 8.125rem;
+      width: 15rem;
       margin: 0 auto;
     }
 
@@ -77,6 +77,9 @@ $padding: 1.25rem;
       margin: 0 auto;
       width: 9.375rem;
       padding: 10px;
+      &:hover {
+        background-color: darken($color: $submit, $amount: 5%);
+      }
     }
   }
 }
@@ -124,6 +127,7 @@ th {
     outline: none;
     resize: none;
     direction: rtl;
+    font-family: unset;
     width: 100%;
   }
 }
