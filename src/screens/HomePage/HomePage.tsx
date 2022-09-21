@@ -28,8 +28,8 @@ const HomePage = () => {
 
 
   useEffect(() => {
-    addProduct();
-    addOwner();
+    addProductToList();
+    addOwnerToList();
   }, [])
 
   const handleChange = (newValue: Dayjs | null) => {
@@ -39,7 +39,7 @@ const HomePage = () => {
 
 
   // useForm Will help us managing the form properties
-  const { control, register, handleSubmit, formState: { errors, }, reset, } = useForm<FormValues>({
+  const { control, register, handleSubmit, formState: { errors, }, reset } = useForm<FormValues>({
     mode: 'onBlur',
     defaultValues: {
       date: date
@@ -47,18 +47,19 @@ const HomePage = () => {
     resolver: yupResolver(formSchema) // resolver for yup to work with react-hook-form
   });
 
-  const { fields, prepend, remove } = useFieldArray({
+  const { fields: productFields, prepend: addProduct, remove: removeProduct } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
     name: "product", // The name of the array
   });
 
-  const { fields: fieldsss, prepend: add, remove: removee } = useFieldArray({
+  const { fields: ownersFields, prepend: addOwner, remove: removeOwner } = useFieldArray({
     control,
     name: "owners",
   });
 
   /* onSubmit form */
   const onSubmit: SubmitHandler<FormValues> = (async (data) => {
+    console.log("constonSubmit:SubmitHandler<FormValues>= ~ data", data)
     setIsSending(true)
 
     /* Date  */
@@ -87,15 +88,15 @@ const HomePage = () => {
   })
 
 
-  const addOwner = () => {
-    add({
+  const addOwnerToList = () => {
+    addOwner({
       firstName: "",
       lastName: "",
     })
   }
 
-  const addProduct = () => {
-    prepend({
+  const addProductToList = () => {
+    addProduct({
       itemName: "",
       color: "",
       amount: "",
@@ -104,8 +105,8 @@ const HomePage = () => {
     })
   }
 
-  const removeOwner = (index: number) => removee(index)
-  const removeProduct = (index: number) => remove(index)
+  const removeOwnerFromList = (index: number) => removeOwner(index)
+  const removeProductFromList = (index: number) => removeProduct(index)
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -247,14 +248,14 @@ const HomePage = () => {
                 </tr>
               </thead>
               <tbody>
-                {fieldsss.map((field, index) => (
+                {ownersFields.map((field, index) => (
                   <tr className="owners-table" key={field.id}>
                     <td>
                       <label htmlFor={`owners.${index}.firstName`}></label>
                       <input
                         id={`owners.${index}.firstName`}
                         autoComplete="new-password"
-                        {...register(`owners.${index}.firstName`)} />
+                        {...register(`owners.${index}.firstName` as const)} />
                       <p className="error">{errors?.owners && errors?.owners[index]?.firstName?.message}</p>
                     </td>
                     <td>
@@ -262,16 +263,16 @@ const HomePage = () => {
                       <input
                         id={`owners.${index}.lastName`}
                         autoComplete="new-password"
-                        {...register(`owners.${index}.lastName`)} />
+                        {...register(`owners.${index}.lastName` as const)} />
                       <p className="error">{errors?.owners && errors?.owners[index]?.lastName?.message}</p>
                     </td>
-                    <td className="remove-trash-td"><AiOutlineUserDelete onClick={() => removeOwner(index)} className='remove-trash-icon' /></td>
+                    <td className="remove-trash-td"><AiOutlineUserDelete onClick={() => removeOwnerFromList(index)} className='remove-trash-icon' /></td>
                   </tr>
                 ))}
               </tbody>
 
             </table>
-            <button type="button" className="add-product" onClick={() => addOwner()}>הוסף בעלים</button>
+            <button type="button" className="add-product" onClick={() => addOwnerToList()}>הוסף בעלים</button>
           </div>
 
 
@@ -280,7 +281,7 @@ const HomePage = () => {
             <h3>תיאור הבקשה</h3>
             <div className="product-container product-table white-container">
 
-              {fields.map((field, index) => (
+              {productFields.map((field, index) => (
                 <div key={field.id}>
                   {/* SMALL SCREENS */}
                   <div className="products-list-for-small-screens">
@@ -290,7 +291,7 @@ const HomePage = () => {
                       htmlFor={`product.${index}.itemName`}
                       label="מוצר"
                       register={register}
-                      registerName={`product.${index}.itemName`}
+                      registerName={`product.${index}.itemName` as const}
                       errorMessage={errors?.product && errors?.product[index]?.itemName?.message} />
 
 
@@ -299,7 +300,7 @@ const HomePage = () => {
                       htmlFor={`product.${index}.color`}
                       label="צבע"
                       register={register}
-                      registerName={`product.${index}.color`}
+                      registerName={`product.${index}.color` as const}
                       errorMessage={errors?.product && errors?.product[index]?.color?.message} />
 
                     {/* product.size */}
@@ -307,13 +308,13 @@ const HomePage = () => {
                       htmlFor={`product.${index}.size`}
                       label="מידה"
                       register={register}
-                      registerName={`product.${index}.size`}
+                      registerName={`product.${index}.size` as const}
                       errorMessage={errors?.product && errors?.product[index]?.size?.message} />
 
 
                     <div className="form-control">
                       <label htmlFor={`product.${index}.kind`}>סוג</label>
-                      <select id={`product.${index}.kind`} {...register(`product.${index}.kind`)}>
+                      <select id={`product.${index}.kind`} {...register(`product.${index}.kind` as const)}>
                         <option value="קרטונים">קרטונים</option>
                         <option value="גלילים">גלילים</option>
                       </select>
@@ -321,14 +322,14 @@ const HomePage = () => {
 
                     <div className="form-control">
                       <label htmlFor={`product.${index}.amount`}>כמות</label>
-                      <input type="number" min="0" max="100" id={`product.${index}.amount`} {...register(`product.${index}.amount`)} />
+                      <input type="number" min="0" max="100" id={`product.${index}.amount`} {...register(`product.${index}.amount` as const)} />
                     </div>
 
-                    <td className="remove-trash-td"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></td>
+                    <td className="remove-trash-td"><RiDeleteBinLine onClick={() => removeProductFromList(index)} className='remove-trash-icon' /></td>
                   </div>
                 </div>
               ))}
-              <button type="button" className="add-product" onClick={() => addProduct()}>הוסף מוצר</button>
+              <button type="button" className="add-product" onClick={() => addProductToList()}>הוסף מוצר</button>
             </div>
 
           </> : <>
@@ -345,40 +346,40 @@ const HomePage = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {fields.map((field, index) => (
+                  {productFields.map((field, index) => (
                     <tr key={field.id}>
                       <td>
                         <label htmlFor={`product.${index}.amount`}></label>
-                        <input id={`product.${index}.amount`} type="number" min="0" max="100" {...register(`product.${index}.amount`)} />
+                        <input id={`product.${index}.amount`} type="number" min="0" max="100" {...register(`product.${index}.amount` as const)} />
                         <p className="error">{errors?.product && errors?.product[index]?.amount?.message}</p>
                       </td>
                       <td>
-                        <select id={`product.${index}.kind`} {...register(`product.${index}.kind`)}>
+                        <select id={`product.${index}.kind`} {...register(`product.${index}.kind` as const)}>
                           <option value="קרטונים">קרטונים</option>
                           <option value="גלילים">גלילים</option>
                         </select>
                       </td>
                       <td>
                         <label htmlFor={`product.${index}.size`}></label>
-                        <textarea id={`product.${index}.size`} {...register(`product.${index}.size`)} />
+                        <textarea id={`product.${index}.size`} {...register(`product.${index}.size` as const)} />
                       </td>
                       <td>
                         <label htmlFor={`product.${index}.color`}></label>
-                        <textarea id={`product.${index}.color`} {...register(`product.${index}.color`)} />
+                        <textarea id={`product.${index}.color`} {...register(`product.${index}.color` as const)} />
                       </td>
 
                       <td>
                         <label htmlFor={`product.${index}.itemName`}></label>
-                        <textarea id={`product.${index}.itemName`} {...register(`product.${index}.itemName`)} />
+                        <textarea id={`product.${index}.itemName`} {...register(`product.${index}.itemName` as const)} />
                       </td>
 
-                      <td className="remove-trash-td"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></td>
+                      <td className="remove-trash-td"><RiDeleteBinLine onClick={() => removeProductFromList(index)} className='remove-trash-icon' /></td>
                     </tr>
                   ))}
                 </tbody>
 
               </table>
-              <button type="button" className="add-product" onClick={() => addProduct()}>הוסף מוצר</button>
+              <button type="button" className="add-product" onClick={() => addProductToList()}>הוסף מוצר</button>
             </div>
           </>}
 

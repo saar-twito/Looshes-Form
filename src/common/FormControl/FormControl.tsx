@@ -13,7 +13,7 @@ interface IFormControl {
 
 }
 
-const FormControl = ({ htmlFor, label, registerName, errorMessage, register,inputType="text", placeholder}: IFormControl) => {
+const FormControl = ({ htmlFor, label, registerName, errorMessage, register, inputType = "text", placeholder }: IFormControl) => {
   return (
     <div className="form-control">
       <label htmlFor={htmlFor}>{label}</label>
