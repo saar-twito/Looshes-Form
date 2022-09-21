@@ -15,5 +15,5 @@ Thus, it can only see the allowed contents by the owner of the website.
 
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow: /
+Disallow: 
  
