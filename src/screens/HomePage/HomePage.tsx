@@ -14,11 +14,9 @@ import UseWindowSize from 'common/hooks/UseWindowsSize';
 import { FormValues } from 'common/interface';
 import * as React from 'react';
 import dayjs, { Dayjs } from 'dayjs';
-import TextField from '@mui/material/TextField';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import BusinessDetails from 'components/BusinessDetails/BusinessDetails';
 
 
 const HomePage = () => {
@@ -26,14 +24,10 @@ const HomePage = () => {
   const form = useRef<any>()
 
 
-
-
-  const [value, setValue] = React.useState<Dayjs | null>(
-    dayjs('2014-08-18T21:11:54'),
-  );
+  const [date, setDate] = React.useState<Dayjs | null>(dayjs(new Date()));
 
   const handleChange = (newValue: Dayjs | null) => {
-    setValue(newValue);
+    setDate(newValue);
   };
 
 
@@ -127,12 +121,10 @@ const HomePage = () => {
   })
 
   // useForm Will help us managing the form properties
-  const { control, register, handleSubmit, formState: { errors }, watch } = useForm<FormValues>({
+  const { control, register, handleSubmit, formState: { errors } } = useForm<FormValues>({
     mode: 'onBlur',
     resolver: yupResolver(formSchema) // resolver for yup to work with react-hook-form
   });
-
-  console.log((watch("dateOfSubmit")));
 
 
   const { fields, prepend, remove } = useFieldArray({
@@ -148,13 +140,9 @@ const HomePage = () => {
   /* onSubmit form */
   const onSubmit = handleSubmit(async (data: FormValues) => {
 
-    console.log(value);
-
-    // @ts-ignore
-    // data.date = value?.$d
-
+    // @ts-ignore // =?! DON'T REMOVE IT
+    data.dateOfSubmit = date?.$d
     console.log("onSubmit ~ data", data)
-
   })
 
   // }).catch(() => handelFormSubmissionError())
@@ -199,100 +187,11 @@ const HomePage = () => {
         <form ref={form} onSubmit={onSubmit} autoComplete="off">
 
           {/* Business Details Section */}
-          <div className="business-details-container">
-
-            <header className='business-details-header'>
-              <h3>פרטי העסק</h3>
-              <div className="form-control">
-                <label htmlFor="date">תאריך</label>
-                {screenWidth < 500 ? <>
-                  <MobileDatePicker
-                    {...register("dateOfSubmit")}
-                    inputFormat="MM/DD/YYYY"
-                    value={value}
-                    onChange={handleChange}
-                    renderInput={(params) => <TextField {...params} />}
-                  />
-                </> :
-                  <>
-                    <DesktopDatePicker
-                      {...register("dateOfSubmit")}
-                      inputFormat="MM/DD/YYYY"
-                      value={value}
-                      onChange={(value) => setValue(value)}
-                      renderInput={(params) => <TextField {...params} />}
-                    />
-                  </>}
-                <p className="error">{errors.dateOfSubmit?.message}</p>
-              </div>
-            </header>
-
-            <div className="white-container">
-
-              {/* COMPANY NAME */}
-              <div className="form-control">
-                <label htmlFor="companyName">שם החברה</label>
-                <input id="companyName" {...register("businessDetails.companyName")} />
-                <p className="error">{errors.businessDetails?.companyName?.message}</p>
-              </div>
-
-
-              {/* COMPANY ADDRESS */}
-              <div className="form-control">
-                <label htmlFor="companyAddress">כתובת</label>
-                <input id="companyAddress" {...register('businessDetails.companyAddress')} />
-                <p className="error">{errors.businessDetails?.companyAddress?.message}</p>
-              </div>
-
-
-              {/* VAT NUMBER */}
-              <div className="form-control">
-                <label htmlFor="vatNumber">ח.פ / עוסק מורשה</label>
-                <input id="vatNumber" type='tel' {...register('businessDetails.vatNumber')} />
-                <p className="error">{errors.businessDetails?.vatNumber?.message}</p>
-              </div>
-
-
-              {/* COMPANY PHONE */}
-              <div className="form-control">
-                <label htmlFor="companyPhone">מספר טלפון</label>
-                <input id="companyPhone" type='tel' {...register('businessDetails.companyPhone')} />
-                <p className="error">{errors.businessDetails?.companyPhone?.message}</p>
-              </div>
-
-
-              {/* PHONE PERSONAL */}
-              <div className="form-control">
-                <label htmlFor="phonePersonal">מספר סלולרי</label>
-                <input id="phonePersonal" type='tel' {...register('businessDetails.phonePersonal')} />
-                <p className="error">{errors.businessDetails?.phonePersonal?.message}</p>
-              </div>
-
-
-              {/* FAX NUMBER */}
-              <div className="form-control">
-                <label htmlFor="faxNumber">מספר פקס</label>
-                <input id="faxNumber" type='tel' {...register('businessDetails.faxNumber')} />
-                <p className="error">{errors.businessDetails?.faxNumber?.message}</p>
-              </div>
-
-
-              {/* EMAIL */}
-              <div className="form-control">
-                <label htmlFor="email">כתובת אימייל</label>
-                <input id="email" type="email" {...register('businessDetails.email')} />
-                <p className="error">{errors.businessDetails?.email?.message}</p>
-              </div>
-
-
-              {/* COMPANY OCCUPATION */}
-              <div className="form-control">
-                <label htmlFor="companyOccupation">עיסוק</label>
-                <input id="companyOccupation" {...register('businessDetails.companyOccupation')} />
-                <p className="error">{errors.businessDetails?.companyOccupation?.message}</p>
-              </div>
-            </div>
-          </div>
+          <BusinessDetails
+            register={register}
+            errors={errors}
+            date={date}
+            handleChange={handleChange} />
 
 
           {/* Owners details */}

@@ -1,10 +1,9 @@
-import { FormValues } from 'common/interface';
-import { UseFormRegister } from 'react-hook-form';
+
 
 interface IFormControl {
   htmlFor: string;
   label: string;
-  register: UseFormRegister<FormValues>
+  register: any;
   registerName: any;
   errorMessage: string | undefined;
   inputType?: string;

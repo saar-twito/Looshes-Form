@@ -1,17 +1,19 @@
 import TextField from '@mui/material/TextField';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import FormControl from 'common/components/FormControl/FormControl';
 import UseWindowSize from 'common/hooks/UseWindowsSize';
-import dayjs, { Dayjs } from 'dayjs';
+import { Dayjs } from 'dayjs';
+import './BusinessDetails.scss'
 
 interface IBusinessDetails {
   register: any;
   errors: any;
   date: Dayjs | null;
-  setDate: React.Dispatch<React.SetStateAction<dayjs.Dayjs | null>>;
+  handleChange: (newValue: Dayjs | null) => void
 }
 
-const BusinessDetails = ({ register, errors, date, setDate }: IBusinessDetails) => {
+const BusinessDetails = ({ register, errors, date, handleChange }: IBusinessDetails) => {
   const [, screenWidth] = UseWindowSize();
 
   return (
@@ -26,7 +28,7 @@ const BusinessDetails = ({ register, errors, date, setDate }: IBusinessDetails) 
               {...register("dateOfSubmit")}
               inputFormat="DD/NN/YYYY"
               value={date}
-              onChange={setDate}
+              onChange={handleChange}
               renderInput={(params) => <TextField {...params} />}
             />
           </> :
@@ -35,7 +37,7 @@ const BusinessDetails = ({ register, errors, date, setDate }: IBusinessDetails) 
                 {...register("dateOfSubmit")}
                 inputFormat="DD/MM/YYYY"
                 value={date}
-                onChange={setDate}
+                onChange={handleChange}
                 renderInput={(params) => <TextField {...params} />}
               />
             </>}
@@ -46,67 +48,68 @@ const BusinessDetails = ({ register, errors, date, setDate }: IBusinessDetails) 
       <div className="white-container">
 
         {/* COMPANY NAME */}
-        <div className="form-control">
-          <label htmlFor="companyName">שם החברה</label>
-          <input id="companyName" {...register("businessDetails.companyName")} />
-          <p className="error">{errors.businessDetails?.companyName?.message}</p>
-        </div>
-
+        <FormControl
+          htmlFor='companyName'
+          label='שם החברה'
+          register={register}
+          registerName="businessDetails.companyName"
+          errorMessage={errors.businessDetails?.companyName?.message} />
 
         {/* COMPANY ADDRESS */}
-        <div className="form-control">
-          <label htmlFor="companyAddress">כתובת</label>
-          <input id="companyAddress" {...register('businessDetails.companyAddress')} />
-          <p className="error">{errors.businessDetails?.companyAddress?.message}</p>
-        </div>
-
+        <FormControl
+          htmlFor='companyAddress'
+          label='כתובת'
+          register={register}
+          registerName="businessDetails.companyAddress"
+          errorMessage={errors.businessDetails?.companyAddress?.message} />
 
         {/* VAT NUMBER */}
-        <div className="form-control">
-          <label htmlFor="vatNumber">ח.פ / עוסק מורשה</label>
-          <input id="vatNumber" type='tel' {...register('businessDetails.vatNumber')} />
-          <p className="error">{errors.businessDetails?.vatNumber?.message}</p>
-        </div>
-
+        <FormControl
+          htmlFor='vatNumber'
+          label='ח.פ / עוסק מורשה'
+          register={register}
+          registerName="businessDetails.vatNumber"
+          errorMessage={errors.businessDetails?.vatNumber?.message} />
 
         {/* COMPANY PHONE */}
-        <div className="form-control">
-          <label htmlFor="companyPhone">מספר טלפון</label>
-          <input id="companyPhone" type='tel' {...register('businessDetails.companyPhone')} />
-          <p className="error">{errors.businessDetails?.companyPhone?.message}</p>
-        </div>
-
+        <FormControl
+          htmlFor='companyPhone'
+          label='מספר טלפון'
+          register={register}
+          registerName="businessDetails.companyPhone"
+          errorMessage={errors.businessDetails?.companyPhone?.message} />
 
         {/* PHONE PERSONAL */}
-        <div className="form-control">
-          <label htmlFor="phonePersonal">מספר סלולרי</label>
-          <input id="phonePersonal" type='tel' {...register('businessDetails.phonePersonal')} />
-          <p className="error">{errors.businessDetails?.phonePersonal?.message}</p>
-        </div>
-
+        <FormControl
+          htmlFor='phonePersonal'
+          label='מספר סלולרי'
+          register={register}
+          registerName="businessDetails.phonePersonal"
+          errorMessage={errors.businessDetails?.phonePersonal?.message} />
 
         {/* FAX NUMBER */}
-        <div className="form-control">
-          <label htmlFor="faxNumber">מספר פקס</label>
-          <input id="faxNumber" type='tel' {...register('businessDetails.faxNumber')} />
-          <p className="error">{errors.businessDetails?.faxNumber?.message}</p>
-        </div>
-
+        <FormControl
+          htmlFor='faxNumber'
+          label='מספר פקס'
+          register={register}
+          registerName="businessDetails.faxNumber"
+          errorMessage={errors.businessDetails?.faxNumber?.message} />
 
         {/* EMAIL */}
-        <div className="form-control">
-          <label htmlFor="email">כתובת אימייל</label>
-          <input id="email" type="email" {...register('businessDetails.email')} />
-          <p className="error">{errors.businessDetails?.email?.message}</p>
-        </div>
-
+        <FormControl
+          htmlFor='email'
+          label='כתובת אימייל'
+          register={register}
+          registerName="businessDetails.email"
+          errorMessage={errors.businessDetails?.email?.message} />
 
         {/* COMPANY OCCUPATION */}
-        <div className="form-control">
-          <label htmlFor="companyOccupation">עיסוק</label>
-          <input id="companyOccupation" {...register('businessDetails.companyOccupation')} />
-          <p className="error">{errors.businessDetails?.companyOccupation?.message}</p>
-        </div>
+        <FormControl
+          htmlFor='companyOccupation'
+          label='עיסוק'
+          register={register}
+          registerName="businessDetails.companyOccupation"
+          errorMessage={errors.businessDetails?.companyOccupation?.message} />
       </div>
     </div>
   )
