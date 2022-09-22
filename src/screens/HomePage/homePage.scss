@@ -15,13 +15,53 @@ $padding: 1.25rem;
 .golden-tape-form-container {
   @include flex();
   padding-top: 1.5625rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+    "Helvetica Neue", sans-serif;
   max-width: 42.5rem;
   margin: 0 auto;
+
+  @import "../../common/style/functions.scss";
+
+  $margin: 1.25rem 0 1.875rem 0;
+
+  .golden-tape-form-header {
+    @include flex();
+    text-align: center;
+
+    img {
+      width: 15rem;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 1.56rem;
+    }
+
+    h2 {
+      font-size: 1.8rem;
+      margin: $margin;
+    }
+  }
 
   form {
     padding: $padding;
 
-    .product-container {
+    .business-details-container {
+      margin-bottom: 1.875rem;
+
+      .business-details-header {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        align-items: center;
+
+        .form-control-date {
+          width: 110px;
+        }
+      }
+    }
+
+    .description-of-the-request-container {
       .products-list-for-small-screens {
         border: 1px solid $borderOnEachProduct;
         padding: $padding;
@@ -66,16 +106,6 @@ table {
   border-collapse: collapse;
   font-size: 1rem;
   margin: 0 auto;
-
-  .owners-table {
-    width: 100%;
-  }
-}
-
-td {
-  select {
-    width: 76px !important;
-  }
 }
 
 td,
@@ -85,16 +115,21 @@ th {
   padding: 0.3125rem;
   text-align: -webkit-right;
 
+  input[type="number"] {
+    width: 2.5rem;
+  }
+  input[type="color"] {
+    width: 1.875rem;
+  }
   input,
   textarea,
   select {
+    width: 5rem;
     font-size: 1rem;
     border: none;
     outline: none;
     resize: none;
     direction: rtl;
-    font-family: unset;
-    width: 100%;
   }
 }
 
@@ -102,7 +137,6 @@ th {
   background: $thBackground;
   color: $thColorText;
 }
-
 .add-product {
   border: 1.5px solid $black;
   background-color: $white;
@@ -116,16 +150,14 @@ th {
 }
 
 @media only screen and (min-width: 550px) {
-  input[type="number"],
-  input[type="color"],
-  input,
   textarea {
     width: 100% !important;
   }
 
-  td {
-    select {
-      width: 76px !important;
+  .business-details-container {
+    .white-container {
+      flex-direction: row-reverse;
+      flex-wrap: wrap;
     }
   }
 }

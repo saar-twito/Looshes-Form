@@ -1,6 +1,5 @@
-import React from 'react'
+import { FormValues } from 'common/interface';
 import { UseFormRegister } from 'react-hook-form';
-import { FormValues } from 'screens/HomePage/interfaces';
 
 interface IFormControl {
   htmlFor: string;
