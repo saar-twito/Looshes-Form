@@ -1,14 +1,8 @@
 import './homePage.scss'
 
-import { RiDeleteBinLine } from "react-icons/ri";
-import { useEffect, useRef } from 'react';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { useRef } from 'react';
+import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
-import isAlpha from "validator/lib/isAlpha";
-import isAlphanumeric from "validator/lib/isAlphanumeric";
-import isEmail from "validator/lib/isEmail";
-import isMobilePhone from "validator/lib/isMobilePhone";
 import { FormValues } from 'common/interface';
 import * as React from 'react';
 import dayjs, { Dayjs } from 'dayjs';
@@ -19,104 +13,13 @@ import Header from 'components/Header/Header';
 import CompanyOwnerDetails from 'components/Form/CompanyOwnerDetails/CompanyOwnerDetails';
 import ListOfProducts from 'components/Form/ListOfProducts/ListOfProducts';
 import SignerName from 'components/Form/SignerName/SignerName';
+import { formSchema } from 'components/Form/formSchema';
 
 
 const HomePage = () => {
+  const [date, setDate] = React.useState<Dayjs | null>(dayjs(new Date()));
   const form = useRef<any>()
 
-
-  const [date, setDate] = React.useState<Dayjs | null>(dayjs(new Date()));
-
-  const handleChange = (newValue: Dayjs | null) => {
-    setDate(newValue);
-  };
-
-
-
-
-
-
-  // FORM SCHEMA WITH YUP
-  const formSchema = Yup.object({
-    dateOfSubmit: Yup.string().required(),
-
-    businessDetails: Yup.object({
-      companyName: Yup.string()
-        .test("is-company-name", "עברית או אנגלית בלבד", value => isAlphanumeric(`${value}`, 'en-US', { ignore: ' ' }) || isAlphanumeric(`${value}`, 'he', { ignore: ' ' }))
-        .max(50, "שם החברה צריך להכיל עד 50 תווים")
-        .min(1, "שם החברה צריך להיות בעל תו אחד לפחות")
-        .required("נדרש למלא"),
-
-      companyPhone: Yup.string()
-        .test("is-phone", `פורמט ישראל או ארה"ב בלבד`, value => isMobilePhone(`${value}`, ['he-IL', 'en-US']))
-        .required("נדרש למלא"),
-
-      email: Yup.string()
-        .email("כתובת אימייל לא חוקית")
-        .test("is-email", "כתובת אימייל לא חוקית", value => isEmail(`${value}`))
-        .max(100, `כתובת הדוא"ל צריכה להכיל עד 100 תווים`)
-        .required("נדרש למלא"),
-
-      companyOccupation: Yup.string()
-        .test("is-company-subject", "עברית או אנגלית בלבד", value => isAlphanumeric(`${value}`, 'en-US', { ignore: ' ' }) || isAlphanumeric(`${value}`, 'he', { ignore: ' ' }))
-        .max(100, "העיסוק של החברה צריך להיות עד 100 תווים")
-        .min(2, "העיסוק של החברה צריך להיות לפחות 2 תווים.")
-        .required("נדרש למלא"),
-
-
-      vatNumber: Yup.string()
-        .test("is-number", `רק מספרים נדרשים`, value => /^\d+$/.test(value as string))
-        .max(9, `עד 9 תווים`)
-        .min(8, `לפחות 8 תווים`)
-        .required("נדרש למלא"),
-
-
-      phonePersonal: Yup.string()
-        .test("is-personal-phone", `פורמט ישראל או ארה"ב בלבד`, value => isMobilePhone(`${value}`, ['he-IL', 'en-US']))
-        .required("נדרש למלא"),
-
-      faxNumber: Yup.string()
-        .test("is-fax-number", "מספר פקס לא חוקי", value => /^\d+$/.test(value as string))
-        .required("נדרש למלא"),
-
-      companyAddress: Yup.string()
-        .max(100, "עד 100 תווים")
-        .min(2, "לפחות 2 תווים")
-        .required("נדרש למלא"),
-    }),
-
-    products: Yup.array(
-      Yup.object({
-        itemName: Yup.string().optional(),
-        color: Yup.string().optional(),
-        amount: Yup.string().optional(),
-        size: Yup.string().optional()
-      })
-    ),
-
-    owners: Yup.array(
-      Yup.object({
-        firstName: Yup.string()
-          .test("is-first-name", "עברית או אנגלית בלבד", value => isAlpha(`${value}`, 'en-US', { ignore: ' ' }) || isAlpha(`${value}`, 'he', { ignore: ' ' }))
-          .max(30, "עד 30 תווים")
-          .min(1, "לפחות תו אחד")
-          .required("נדרש למלא"),
-
-        lastName: Yup.string()
-          .test("is-last-name", "עברית או אנגלית בלבד", value => isAlpha(`${value}`, 'en-US', { ignore: ' ' }) || isAlpha(`${value}`, 'he', { ignore: ' ' }))
-          .max(30, "עד 30 תווים")
-          .min(1, "לפחות תו אחד")
-          .required("נדרש למלא"),
-      })
-    ),
-
-    signerName: Yup.string()
-      .min(2, "לפחות שני תווים")
-      .max(30, "עד 30 תווים")
-      .required("נדרש למלא"),
-
-    message: Yup.string().max(300).optional(),
-  })
 
   // useForm Will help us managing the form properties
   const { control, register, handleSubmit, formState: { errors } } = useForm<FormValues>({
@@ -126,17 +29,16 @@ const HomePage = () => {
 
 
 
-
-  /* onSubmit form */
   const onSubmit = handleSubmit(async (data: FormValues) => {
-
-    // @ts-ignore // =?! DON'T REMOVE IT
+    // @ts-ignore //! => Don't Remove The @Ts-Ignore
     data.dateOfSubmit = date?.$d
     console.log("onSubmit ~ data", data)
   })
 
-  // }).catch(() => handelFormSubmissionError())
 
+  const handleChange = (newValue: Dayjs | null) => {
+    setDate(newValue);
+  };
 
 
 
@@ -163,6 +65,7 @@ const HomePage = () => {
 
           {/* DESCRIPTION OF THE REQUEST SECTION */}
           <ListOfProducts control={control} register={register} errors={errors} />
+
 
           <SignerName register={register} errors={errors} />
 
