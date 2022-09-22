@@ -24,25 +24,6 @@ $padding: 1.25rem;
 
   $margin: 1.25rem 0 1.875rem 0;
 
-  .golden-tape-form-header {
-    @include flex();
-    text-align: center;
-
-    img {
-      width: 15rem;
-      margin: 0 auto;
-    }
-
-    h1 {
-      font-size: 1.56rem;
-    }
-
-    h2 {
-      font-size: 1.8rem;
-      margin: $margin;
-    }
-  }
-
   form {
     padding: $padding;
 
@@ -72,18 +53,6 @@ $padding: 1.25rem;
         background-color: darken($color: $submit, $amount: 5%);
       }
     }
-  }
-}
-
-.remove-trash-td {
-  width: min-content;
-  :hover {
-    color: $red;
-  }
-  .remove-trash-icon {
-    font-size: 1.5625rem;
-    transition: color 0.2s ease;
-    cursor: pointer;
   }
 }
 

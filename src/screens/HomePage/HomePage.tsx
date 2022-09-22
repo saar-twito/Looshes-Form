@@ -1,22 +1,23 @@
 import './homePage.scss'
-import { AiOutlineUserDelete } from "react-icons/ai";
+
 import { RiDeleteBinLine } from "react-icons/ri";
 import { useEffect, useRef } from 'react';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { ArrayPath, DeepPartial, FieldArray, FieldError, FieldErrorsImpl, FieldValues, FormState, Path, PathValue, useFieldArray, useForm, UseFormRegisterReturn, Validate, ValidationRule } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import isAlpha from "validator/lib/isAlpha";
 import isAlphanumeric from "validator/lib/isAlphanumeric";
 import isEmail from "validator/lib/isEmail";
 import isMobilePhone from "validator/lib/isMobilePhone";
-import logo from '../../assets/logo.svg'
 import UseWindowSize from 'common/hooks/UseWindowsSize';
 import { FormValues } from 'common/interface';
 import * as React from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import BusinessDetails from 'components/BusinessDetails/BusinessDetails';
+import BusinessDetails from 'components/Form/BusinessDetails/BusinessDetails';
+import Header from 'components/Header/Header';
+import CompanyOwnerDetails from 'components/Form/CompanyOwnerDetails/CompanyOwnerDetails';
 
 
 const HomePage = () => {
@@ -34,7 +35,6 @@ const HomePage = () => {
 
   useEffect(() => {
     addProduct();
-    addOwner();
   }, [])
 
 
@@ -132,10 +132,6 @@ const HomePage = () => {
     name: "products", // The name of the array
   });
 
-  const { fields: fieldsss, prepend: add, remove: removee } = useFieldArray({
-    control,
-    name: "owners",
-  });
 
   /* onSubmit form */
   const onSubmit = handleSubmit(async (data: FormValues) => {
@@ -146,18 +142,6 @@ const HomePage = () => {
   })
 
   // }).catch(() => handelFormSubmissionError())
-
-  const addOwner = () => {
-    add({
-      firstName: "",
-      lastName: "",
-    })
-  }
-
-
-  const removeOwner = (index: number) => {
-    removee(index)
-  }
 
   const addProduct = () => {
     prepend({
@@ -178,10 +162,7 @@ const HomePage = () => {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="golden-tape-form-container">
 
-        <header className="golden-tape-form-header">
-          <img src={logo} alt="" />
-          <h2>טופס בקשה להצעת מחיר</h2>
-        </header>
+        <Header />
 
         {/* Form */}
         <form ref={form} onSubmit={onSubmit} autoComplete="off">
@@ -195,29 +176,7 @@ const HomePage = () => {
 
 
           {/* Owners details */}
-          <h3>פרטי בעל\י החברה</h3>
-          <div className="white-container">
-            <table>
-              <tr>
-                <th>שם משפחה</th>
-                <th>שם פרטי</th>
-              </tr>
-              {fieldsss.map((field, index) => (
-                <tr key={field.id}>
-                  <td>
-                    <input style={{ width: '100%' }} autoComplete="new-password" {...register(`owners.${index}.firstName`)} />
-                    <p className="error">{errors?.owners && errors?.owners[index]?.firstName?.message}</p>
-                  </td>
-                  <td>
-                    <input style={{ width: '100%' }} autoComplete="new-password" {...register(`owners.${index}.lastName`)} />
-                    <p className="error">{errors?.owners && errors?.owners[index]?.lastName?.message}</p>
-                  </td>
-                  <td className="remove-trash-td"><AiOutlineUserDelete onClick={() => removeOwner(index)} className='remove-trash-icon' /></td>
-                </tr>
-              ))}
-            </table>
-            <button type="button" className="add-product" onClick={() => addOwner()}>הוסף בעלים</button>
-          </div>
+          <CompanyOwnerDetails control={control} register={register} errors={errors} />
 
 
           {/* DESCRIPTION OF THE REQUEST SECTION */}

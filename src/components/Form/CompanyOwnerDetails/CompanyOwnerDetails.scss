@@ -1,0 +1,11 @@
+.remove-owner-td {
+  width: min-content;
+  :hover {
+    color: $red;
+  }
+  .remove-owner-icon {
+    font-size: 1.5625rem;
+    transition: color 0.2s ease;
+    cursor: pointer;
+  }
+}

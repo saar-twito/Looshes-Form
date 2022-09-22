@@ -13,6 +13,13 @@ interface IAddOwner {
   lastName: "",
 }
 
+
+export interface IFormUtils {
+  register: any,
+  errors: any,
+}
+
+
 export interface FormValues {
   dateOfSubmit: Dayjs | null
   businessDetails: {
