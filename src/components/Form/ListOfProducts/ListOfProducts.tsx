@@ -44,49 +44,46 @@ const ListOfProducts = ({ control, register, errors }: IListOfProducts) => {
         <div className="description-of-the-request-container white-container">
 
           {fields.map((field, index) => (
-            <>
-              {/* SMALL SCREENS */}
-              <div key={field.id} className="products-list-for-small-screens">
+            <div key={field.id} className="products-list-for-small-screens">
 
-                <FormControl
-                  htmlFor='itemName'
-                  label='מוצר'
-                  register={register}
-                  registerName={`products.${index}.itemName`}
-                  errorMessage={errors?.products && errors?.products[index]?.itemName?.message} />
+              <FormControl
+                htmlFor='itemName'
+                label='מוצר'
+                register={register}
+                registerName={`products.${index}.itemName`}
+                errorMessage={errors?.products && errors?.products[index]?.itemName?.message} />
 
-                <FormControl
-                  htmlFor='color'
-                  label='צבע'
-                  register={register}
-                  registerName={`products.${index}.color`}
-                  errorMessage={errors?.products && errors?.products[index]?.color?.message} />
+              <FormControl
+                htmlFor='color'
+                label='צבע'
+                register={register}
+                registerName={`products.${index}.color`}
+                errorMessage={errors?.products && errors?.products[index]?.color?.message} />
 
-                <FormControl
-                  htmlFor='size'
-                  label='מידה'
-                  register={register}
-                  registerName={`products.${index}.size`}
-                  errorMessage={errors?.products && errors?.products[index]?.size?.message} />
+              <FormControl
+                htmlFor='size'
+                label='מידה'
+                register={register}
+                registerName={`products.${index}.size`}
+                errorMessage={errors?.products && errors?.products[index]?.size?.message} />
 
-                <div className="form-control">
-                  <label htmlFor="kind">סוג</label>
-                  <select id="kind" {...register(`products.${index}.kind`)}>
-                    <option value="קרטונים">קרטונים</option>
-                    <option value="גלילים">גלילים</option>
-                  </select>
-                </div>
-
-                <FormControl
-                  htmlFor='amount'
-                  label='כמות'
-                  register={register}
-                  registerName={`products.${index}.amount`}
-                  errorMessage={errors?.products && errors?.products[index]?.amount?.message} />
-
-                <button className="remove-trash"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></button>
+              <div className="form-control">
+                <label htmlFor="kind">סוג</label>
+                <select id="kind" {...register(`products.${index}.kind`)}>
+                  <option value="קרטונים">קרטונים</option>
+                  <option value="גלילים">גלילים</option>
+                </select>
               </div>
-            </>
+
+              <FormControl
+                htmlFor='amount'
+                label='כמות'
+                register={register}
+                registerName={`products.${index}.amount`}
+                errorMessage={errors?.products && errors?.products[index]?.amount?.message} />
+
+              <button className="remove-trash"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></button>
+            </div>
           ))}
           <button type="button" className="add-product" onClick={() => addProduct()}>הוסף מוצר</button>
         </div>
