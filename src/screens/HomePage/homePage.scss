@@ -37,8 +37,9 @@
       margin: 0 auto;
       width: 9.375rem;
       padding: 10px;
+      color: $white;
       &:hover {
-        background-color: darken($color: $submit, $amount: 5%);
+        background-color: darken($color: $submit, $amount: 3%);
       }
     }
   }

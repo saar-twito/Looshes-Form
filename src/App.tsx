@@ -14,18 +14,18 @@ const App = () => {
         <Route path="/" element={<HomePage />} />
         <Route path="*" element={<Navigate replace to="/" />} />
       </Routes>
+
+      {/* Toasty Configuration */}
       <ToastContainer
-          style={{ fontSize: 16 }}
-          autoClose={4000}
-          hideProgressBar
-          draggable
-          closeButton
-          closeOnClick
-          position='top-right'
-        />
+        style={{ fontSize: 16 }}
+        autoClose={4000}
+        hideProgressBar
+        draggable
+        closeButton
+        closeOnClick
+        position='top-right'
+      />
     </BrowserRouter>
-
-
   );
 }
 
