@@ -26,8 +26,9 @@ const BusinessDetails = ({ register, errors, date, handleChange }: IBusinessDeta
           {screenWidth < 500 ? <>
             <MobileDatePicker
               {...register("dateOfSubmit")}
-              inputFormat="DD/NN/YYYY"
+              inputFormat="DD/MM/YYYY"
               value={date}
+              closeOnSelect={true}
               onChange={handleChange}
               renderInput={(params) => <TextField {...params} />}
             />
@@ -37,6 +38,7 @@ const BusinessDetails = ({ register, errors, date, handleChange }: IBusinessDeta
                 {...register("dateOfSubmit")}
                 inputFormat="DD/MM/YYYY"
                 value={date}
+                closeOnSelect={true}
                 onChange={handleChange}
                 renderInput={(params) => <TextField {...params} />}
               />

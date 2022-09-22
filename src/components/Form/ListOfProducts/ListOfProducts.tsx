@@ -48,7 +48,6 @@ const ListOfProducts = ({ control, register, errors }: IListOfProducts) => {
               {/* SMALL SCREENS */}
               <div key={field.id} className="products-list-for-small-screens">
 
-
                 <FormControl
                   htmlFor='itemName'
                   label='מוצר'
@@ -70,7 +69,6 @@ const ListOfProducts = ({ control, register, errors }: IListOfProducts) => {
                   registerName={`products.${index}.size`}
                   errorMessage={errors?.products && errors?.products[index]?.size?.message} />
 
-
                 <div className="form-control">
                   <label htmlFor="kind">סוג</label>
                   <select id="kind" {...register(`products.${index}.kind`)}>
@@ -86,7 +84,7 @@ const ListOfProducts = ({ control, register, errors }: IListOfProducts) => {
                   registerName={`products.${index}.amount`}
                   errorMessage={errors?.products && errors?.products[index]?.amount?.message} />
 
-                <td className="remove-trash-td"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></td>
+                <button className="remove-trash"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></button>
               </div>
             </>
           ))}
@@ -124,7 +122,7 @@ const ListOfProducts = ({ control, register, errors }: IListOfProducts) => {
                     </select>
                   </td>
 
-                  <td className="remove-trash-td"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></td>
+                  <td className="remove-trash"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></td>
                 </tr>
               ))}
             </tbody>

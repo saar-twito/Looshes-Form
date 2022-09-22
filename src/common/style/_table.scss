@@ -36,8 +36,10 @@ th {
   color: $thColorText;
 }
 
-.remove-trash-td {
+.remove-trash {
   width: min-content;
+  background: none;
+  border: none;
   :hover {
     color: $red;
   }
