@@ -18,6 +18,7 @@ import BusinessDetails from 'components/Form/BusinessDetails/BusinessDetails';
 import Header from 'components/Header/Header';
 import CompanyOwnerDetails from 'components/Form/CompanyOwnerDetails/CompanyOwnerDetails';
 import ListOfProducts from 'components/Form/ListOfProducts/ListOfProducts';
+import SignerName from 'components/Form/SignerName/SignerName';
 
 
 const HomePage = () => {
@@ -163,30 +164,12 @@ const HomePage = () => {
           {/* DESCRIPTION OF THE REQUEST SECTION */}
           <ListOfProducts control={control} register={register} errors={errors} />
 
-          <h3>שם ממלא הטופס</h3>
-          <footer className="white-container">
-            {/* Signer's name */}
-            <div className="form-control">
-              <label htmlFor="signerName">שם מלא</label>
-              <input id="signerName" {...register('signerName')} />
-              <p className="error">{errors.signerName?.message}</p>
-            </div>
-
-            {/* Message */}
-            <div className="form-control">
-              <label htmlFor="message">הערות</label>
-              <textarea className="message" id="message" {...register('message')} />
-            </div>
-          </footer>
+          <SignerName register={register} errors={errors} />
 
           {/* SUBMIT BUTTON */}
           <button type="submit" className="submit">שלח</button>
         </form>
 
-        {/* <div className="form-control">
-    <label style={{ visibility: 'hidden' }} htmlFor="array"></label>
-    <input style={{ visibility: 'hidden' }} id="array" placeholder='array' {...register('array')} />
-  </div>  */}
       </div>
     </LocalizationProvider>
 
