@@ -1,8 +1,6 @@
 @import "../../common/style/_colors.scss";
 @import "../../common/style/functions.scss";
-
-$margin: 1.25rem 0 1.875rem 0;
-$padding: 1.25rem;
+@import "../../common/style/_variables.scss";
 
 .white-container {
   background: $white;
@@ -20,20 +18,10 @@ $padding: 1.25rem;
   max-width: 42.5rem;
   margin: 0 auto;
 
-  @import "../../common/style/functions.scss";
-
   $margin: 1.25rem 0 1.875rem 0;
 
   form {
     padding: $padding;
-
-    .description-of-the-request-container {
-      .products-list-for-small-screens {
-        border: 1px solid $borderOnEachProduct;
-        padding: $padding;
-        @include flex();
-      }
-    }
 
     .message {
       @include inputSetUp();
@@ -56,41 +44,6 @@ $padding: 1.25rem;
   }
 }
 
-table {
-  border-collapse: collapse;
-  font-size: 1rem;
-  margin: 0 auto;
-}
-
-td,
-th {
-  border: 1px solid $thBorder;
-  text-align: left;
-  padding: 0.3125rem;
-  text-align: -webkit-right;
-
-  input[type="number"] {
-    width: 2.5rem;
-  }
-  input[type="color"] {
-    width: 1.875rem;
-  }
-  input,
-  textarea,
-  select {
-    width: 5rem;
-    font-size: 1rem;
-    border: none;
-    outline: none;
-    resize: none;
-    direction: rtl;
-  }
-}
-
-th {
-  background: $thBackground;
-  color: $thColorText;
-}
 .add-product {
   border: 1.5px solid $black;
   background-color: $white;

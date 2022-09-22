@@ -35,23 +35,29 @@ const CompanyOwnerDetails = ({ control, errors, register }: ICompanyOwnerDetails
       <h3>פרטי בעל\י החברה</h3>
       <div className="white-container">
         <table>
-          <tr>
-            <th>שם משפחה</th>
-            <th>שם פרטי</th>
-          </tr>
-          {fields.map((field, index) => (
-            <tr key={field.id}>
-              <td>
-                <input style={{ width: '100%' }} autoComplete="new-password" {...register(`owners.${index}.firstName`)} />
-                <p className="error">{errors?.owners && errors?.owners[index]?.firstName?.message}</p>
-              </td>
-              <td>
-                <input style={{ width: '100%' }} autoComplete="new-password" {...register(`owners.${index}.lastName`)} />
-                <p className="error">{errors?.owners && errors?.owners[index]?.lastName?.message}</p>
-              </td>
-              <td className="remove-trash-td"><AiOutlineUserDelete onClick={() => removeOwner(index)} className='remove-trash-icon' /></td>
+          <thead>
+            <tr>
+              <th>שם משפחה</th>
+              <th>שם פרטי</th>
             </tr>
-          ))}
+          </thead>
+
+          <tbody>
+            {fields.map((field, index) => (
+              <tr key={field.id}>
+                <td>
+                  <input style={{ width: '100%' }} autoComplete="new-password" {...register(`owners.${index}.firstName`)} />
+                  <p className="error">{errors?.owners && errors?.owners[index]?.firstName?.message}</p>
+                </td>
+                <td>
+                  <input style={{ width: '100%' }} autoComplete="new-password" {...register(`owners.${index}.lastName`)} />
+                  <p className="error">{errors?.owners && errors?.owners[index]?.lastName?.message}</p>
+                </td>
+                <td className="remove-trash-td"><AiOutlineUserDelete onClick={() => removeOwner(index)} className='remove-trash-icon' /></td>
+              </tr>
+            ))}
+          </tbody>
+
         </table>
         <button type="button" className="add-product" onClick={() => addOwner()}>הוסף בעלים</button>
       </div>

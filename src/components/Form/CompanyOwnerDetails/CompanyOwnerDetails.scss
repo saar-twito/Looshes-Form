@@ -1,13 +1,2 @@
 @import "../../../common/style/_colors.scss";
-
-.remove-trash-td {
-  width: min-content;
-  :hover {
-    color: $red;
-  }
-  .remove-trash-icon {
-    font-size: 1.5625rem;
-    transition: color 0.2s ease;
-    cursor: pointer;
-  }
-}
+@import "../../../common/style/_table.scss";
