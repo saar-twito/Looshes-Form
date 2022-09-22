@@ -2,14 +2,13 @@ import './homePage.scss'
 
 import { RiDeleteBinLine } from "react-icons/ri";
 import { useEffect, useRef } from 'react';
-import { ArrayPath, DeepPartial, FieldArray, FieldError, FieldErrorsImpl, FieldValues, FormState, Path, PathValue, useFieldArray, useForm, UseFormRegisterReturn, Validate, ValidationRule } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import isAlpha from "validator/lib/isAlpha";
 import isAlphanumeric from "validator/lib/isAlphanumeric";
 import isEmail from "validator/lib/isEmail";
 import isMobilePhone from "validator/lib/isMobilePhone";
-import UseWindowSize from 'common/hooks/UseWindowsSize';
 import { FormValues } from 'common/interface';
 import * as React from 'react';
 import dayjs, { Dayjs } from 'dayjs';
@@ -18,10 +17,10 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import BusinessDetails from 'components/Form/BusinessDetails/BusinessDetails';
 import Header from 'components/Header/Header';
 import CompanyOwnerDetails from 'components/Form/CompanyOwnerDetails/CompanyOwnerDetails';
+import ListOfProducts from 'components/Form/ListOfProducts/ListOfProducts';
 
 
 const HomePage = () => {
-  const [, screenWidth] = UseWindowSize();
   const form = useRef<any>()
 
 
@@ -33,9 +32,7 @@ const HomePage = () => {
 
 
 
-  useEffect(() => {
-    addProduct();
-  }, [])
+
 
 
   // FORM SCHEMA WITH YUP
@@ -127,10 +124,6 @@ const HomePage = () => {
   });
 
 
-  const { fields, prepend, remove } = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormContext)
-    name: "products", // The name of the array
-  });
 
 
   /* onSubmit form */
@@ -143,19 +136,7 @@ const HomePage = () => {
 
   // }).catch(() => handelFormSubmissionError())
 
-  const addProduct = () => {
-    prepend({
-      itemName: "",
-      color: "",
-      amount: "",
-      size: "",
-      kind: ""
-    })
-  }
 
-  const removeProduct = (index: number) => {
-    remove(index)
-  }
 
 
   return (
@@ -180,85 +161,7 @@ const HomePage = () => {
 
 
           {/* DESCRIPTION OF THE REQUEST SECTION */}
-          {screenWidth < 500 ? <>
-            <h3>תיאור הבקשה</h3>
-            <div className="description-of-the-request-container white-container">
-
-              {fields.map((field, index) => (
-                <>
-                  {/* SMALL SCREENS */}
-                  <div key={field.id} className="products-list-for-small-screens">
-
-                    <div className="form-control">
-                      <label htmlFor="itemName">מוצר</label>
-                      <input id="itemName" {...register(`products.${index}.itemName`)} />
-                    </div>
-
-                    <div className="form-control">
-                      <label htmlFor="color">צבע</label>
-                      <input id="color" {...register(`products.${index}.color`)} />
-                    </div>
-
-                    <div className="form-control">
-                      <label htmlFor="size">מידה</label>
-                      <input id="size" {...register(`products.${index}.size`)} />
-                    </div>
-
-                    <div className="form-control">
-                      <label htmlFor="kind">סוג</label>
-                      <select id="kind" {...register(`products.${index}.kind`)}>
-                        <option value="קרטונים">קרטונים</option>
-                        <option value="גלילים">גלילים</option>
-                      </select>
-                    </div>
-
-                    <div className="form-control">
-                      <label htmlFor="amount">כמות</label>
-                      <input type="number" id="amount" {...register(`products.${index}.amount`)} />
-                    </div>
-
-                    <td className="remove-trash-td"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></td>
-                  </div>
-                </>
-              ))}
-              <button type="button" className="add-product" onClick={() => addProduct()}>הוסף מוצר</button>
-            </div>
-
-          </> : <>
-            <h3>תיאור הבקשה</h3>
-            <div className="white-container">
-              <table>
-                <tr>
-                  <th>כמות</th>
-                  <th>סוג</th>
-                  <th>מידה</th>
-                  <th>צבע</th>
-                  <th>מוצר</th>
-                </tr>
-                {fields.map((field, index) => (
-                  <tr key={field.id}>
-                    <td>
-                      <input type="number" {...register(`products.${index}.amount`)} />
-                      <p className="error">{errors?.products && errors?.products[index]?.amount?.message}</p>
-                    </td>
-                    <td><textarea {...register(`products.${index}.size`)} /></td>
-                    <td><textarea {...register(`products.${index}.color`)} /></td>
-                    <td><textarea {...register(`products.${index}.itemName`)} /></td>
-                    <td>
-                      <select id="kind" {...register(`products.${index}.kind`)}>
-                        <option value="קרטונים">קרטונים</option>
-                        <option value="גלילים">גלילים</option>
-                      </select>
-                    </td>
-
-                    <td className="remove-trash-td"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></td>
-                  </tr>
-                ))}
-              </table>
-              <button type="button" className="add-product" onClick={() => addProduct()}>הוסף מוצר</button>
-            </div>
-          </>}
-
+          <ListOfProducts control={control} register={register} errors={errors} />
 
           <h3>שם ממלא הטופס</h3>
           <footer className="white-container">

@@ -49,7 +49,7 @@ const CompanyOwnerDetails = ({ control, errors, register }: ICompanyOwnerDetails
                 <input style={{ width: '100%' }} autoComplete="new-password" {...register(`owners.${index}.lastName`)} />
                 <p className="error">{errors?.owners && errors?.owners[index]?.lastName?.message}</p>
               </td>
-              <td className="remove-owner-td"><AiOutlineUserDelete onClick={() => removeOwner(index)} className='remove-owner-icon' /></td>
+              <td className="remove-trash-td"><AiOutlineUserDelete onClick={() => removeOwner(index)} className='remove-trash-icon' /></td>
             </tr>
           ))}
         </table>
