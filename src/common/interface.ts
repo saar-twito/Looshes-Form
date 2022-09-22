@@ -14,7 +14,7 @@ interface IAddOwner {
 }
 
 export interface FormValues {
-  date: Dayjs | null
+  dateOfSubmit: Dayjs | null
   businessDetails: {
     companyName: string;
     companyPhone: string;
@@ -25,7 +25,7 @@ export interface FormValues {
     faxNumber: string;
     companyAddress: string;
   }
-  descriptionOfTheRequest: IAddProduct[];
+  products: IAddProduct[];
   owners: IAddOwner[]
   array: string[];
   signerName: string;

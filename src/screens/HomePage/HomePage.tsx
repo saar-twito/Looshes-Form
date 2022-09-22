@@ -1,47 +1,52 @@
 import './homePage.scss'
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { AiOutlineUserDelete } from "react-icons/ai";
-import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import { RiDeleteBinLine } from "react-icons/ri";
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import dayjs, { Dayjs } from 'dayjs';
 import isAlpha from "validator/lib/isAlpha";
 import isAlphanumeric from "validator/lib/isAlphanumeric";
 import isEmail from "validator/lib/isEmail";
 import isMobilePhone from "validator/lib/isMobilePhone";
-import logo from 'assets/logo.webp'
-import TextField from '@mui/material/TextField';
+import logo from '../../assets/logo.svg'
 import UseWindowSize from 'common/hooks/UseWindowsSize';
 import { FormValues } from 'common/interface';
-
-
-
-
+import * as React from 'react';
+import dayjs, { Dayjs } from 'dayjs';
+import TextField from '@mui/material/TextField';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 
 
 const HomePage = () => {
   const [, screenWidth] = UseWindowSize();
-  const [value, setValue] = useState<Dayjs | null>(
-    dayjs(new Date()),
+  const form = useRef<any>()
+
+
+
+
+  const [value, setValue] = React.useState<Dayjs | null>(
+    dayjs('2014-08-18T21:11:54'),
   );
+
+  const handleChange = (newValue: Dayjs | null) => {
+    setValue(newValue);
+  };
+
+
 
   useEffect(() => {
     addProduct();
     addOwner();
   }, [])
 
-  const handleChange = (newValue: Dayjs | null) => {
-    setValue(newValue);
-  };
 
   // FORM SCHEMA WITH YUP
   const formSchema = Yup.object({
-    date: Yup.string().required(),
+    dateOfSubmit: Yup.string().required(),
 
     businessDetails: Yup.object({
       companyName: Yup.string()
@@ -88,7 +93,7 @@ const HomePage = () => {
         .required("נדרש למלא"),
     }),
 
-    descriptionOfTheRequest: Yup.array(
+    products: Yup.array(
       Yup.object({
         itemName: Yup.string().optional(),
         color: Yup.string().optional(),
@@ -113,26 +118,26 @@ const HomePage = () => {
       })
     ),
 
-    array: Yup.string().optional(),
     signerName: Yup.string()
       .min(2, "לפחות שני תווים")
       .max(30, "עד 30 תווים")
       .required("נדרש למלא"),
+
     message: Yup.string().max(300).optional(),
   })
 
   // useForm Will help us managing the form properties
-  const { control, register, handleSubmit, formState: { errors } } = useForm<FormValues>({
+  const { control, register, handleSubmit, formState: { errors }, watch } = useForm<FormValues>({
     mode: 'onBlur',
-    defaultValues: {
-      date: value
-    },
     resolver: yupResolver(formSchema) // resolver for yup to work with react-hook-form
   });
 
+  console.log((watch("dateOfSubmit")));
+
+
   const { fields, prepend, remove } = useFieldArray({
     control, // control props comes from useForm (optional: if you are using FormContext)
-    name: "descriptionOfTheRequest", // The name of the array
+    name: "products", // The name of the array
   });
 
   const { fields: fieldsss, prepend: add, remove: removee } = useFieldArray({
@@ -143,25 +148,13 @@ const HomePage = () => {
   /* onSubmit form */
   const onSubmit = handleSubmit(async (data: FormValues) => {
 
-    for (let i = 0; i < data.descriptionOfTheRequest.length; i++) {
-      const { amount, color, itemName, size } = data.descriptionOfTheRequest[i]
-      if (!amount || !color || !itemName || !size) { // if one property of the rublica is empty.
-        data.descriptionOfTheRequest.splice(i, 1)
-      }
-    }
+    console.log(value);
 
+    // @ts-ignore
+    // data.date = value?.$d
 
-    for (let i = 0; i < data.owners.length; i++) {
-      const { firstName, lastName } = data.owners[i]
-      if (!firstName || !lastName) { // if one property of the rublica is empty.
-        data.owners.splice(i, 1)
-      }
-    }
+    console.log("onSubmit ~ data", data)
 
-    data.array = data.descriptionOfTheRequest.map((item, index) => {
-      return `${index} - item name: ${item.itemName}, size: ${item.size}, color: ${item.color}, amount:${item.amount} `
-    })
-    console.log(data);
   })
 
   // }).catch(() => handelFormSubmissionError())
@@ -203,7 +196,7 @@ const HomePage = () => {
         </header>
 
         {/* Form */}
-        <form onSubmit={onSubmit} autoComplete="off">
+        <form ref={form} onSubmit={onSubmit} autoComplete="off">
 
           {/* Business Details Section */}
           <div className="business-details-container">
@@ -214,24 +207,23 @@ const HomePage = () => {
                 <label htmlFor="date">תאריך</label>
                 {screenWidth < 500 ? <>
                   <MobileDatePicker
-                    inputFormat="DD/MM/YYYY"
+                    {...register("dateOfSubmit")}
+                    inputFormat="MM/DD/YYYY"
                     value={value}
-                    closeOnSelect={true}
                     onChange={handleChange}
-                    className="form-control-date"
                     renderInput={(params) => <TextField {...params} />}
                   />
                 </> :
                   <>
                     <DesktopDatePicker
-                      inputFormat="DD/MM/YYYY"
+                      {...register("dateOfSubmit")}
+                      inputFormat="MM/DD/YYYY"
                       value={value}
-                      closeOnSelect={true}
-                      onChange={handleChange}
+                      onChange={(value) => setValue(value)}
                       renderInput={(params) => <TextField {...params} />}
                     />
                   </>}
-                <p className="error">{errors.date?.message}</p>
+                <p className="error">{errors.dateOfSubmit?.message}</p>
               </div>
             </header>
 
@@ -341,22 +333,22 @@ const HomePage = () => {
 
                     <div className="form-control">
                       <label htmlFor="itemName">מוצר</label>
-                      <input id="itemName" {...register(`descriptionOfTheRequest.${index}.itemName`)} />
+                      <input id="itemName" {...register(`products.${index}.itemName`)} />
                     </div>
 
                     <div className="form-control">
                       <label htmlFor="color">צבע</label>
-                      <input id="color" {...register(`descriptionOfTheRequest.${index}.color`)} />
+                      <input id="color" {...register(`products.${index}.color`)} />
                     </div>
 
                     <div className="form-control">
                       <label htmlFor="size">מידה</label>
-                      <input id="size" {...register(`descriptionOfTheRequest.${index}.size`)} />
+                      <input id="size" {...register(`products.${index}.size`)} />
                     </div>
 
                     <div className="form-control">
                       <label htmlFor="kind">סוג</label>
-                      <select id="kind" {...register(`descriptionOfTheRequest.${index}.kind`)}>
+                      <select id="kind" {...register(`products.${index}.kind`)}>
                         <option value="קרטונים">קרטונים</option>
                         <option value="גלילים">גלילים</option>
                       </select>
@@ -364,7 +356,7 @@ const HomePage = () => {
 
                     <div className="form-control">
                       <label htmlFor="amount">כמות</label>
-                      <input type="number" id="amount" {...register(`descriptionOfTheRequest.${index}.amount`)} />
+                      <input type="number" id="amount" {...register(`products.${index}.amount`)} />
                     </div>
 
                     <td className="remove-trash-td"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></td>
@@ -388,14 +380,14 @@ const HomePage = () => {
                 {fields.map((field, index) => (
                   <tr key={field.id}>
                     <td>
-                      <input type="number" {...register(`descriptionOfTheRequest.${index}.amount`)} />
-                      <p className="error">{errors?.descriptionOfTheRequest && errors?.descriptionOfTheRequest[index]?.amount?.message}</p>
+                      <input type="number" {...register(`products.${index}.amount`)} />
+                      <p className="error">{errors?.products && errors?.products[index]?.amount?.message}</p>
                     </td>
-                    <td><textarea {...register(`descriptionOfTheRequest.${index}.size`)} /></td>
-                    <td><textarea {...register(`descriptionOfTheRequest.${index}.color`)} /></td>
-                    <td><textarea {...register(`descriptionOfTheRequest.${index}.itemName`)} /></td>
+                    <td><textarea {...register(`products.${index}.size`)} /></td>
+                    <td><textarea {...register(`products.${index}.color`)} /></td>
+                    <td><textarea {...register(`products.${index}.itemName`)} /></td>
                     <td>
-                      <select id="kind" {...register(`descriptionOfTheRequest.${index}.kind`)}>
+                      <select id="kind" {...register(`products.${index}.kind`)}>
                         <option value="קרטונים">קרטונים</option>
                         <option value="גלילים">גלילים</option>
                       </select>
@@ -431,11 +423,12 @@ const HomePage = () => {
         </form>
 
         {/* <div className="form-control">
-          <label style={{ visibility: 'hidden' }} htmlFor="array"></label>
-          <input style={{ visibility: 'hidden' }} id="array" placeholder='array' {...register('array')} />
-        </div>  */}
+    <label style={{ visibility: 'hidden' }} htmlFor="array"></label>
+    <input style={{ visibility: 'hidden' }} id="array" placeholder='array' {...register('array')} />
+  </div>  */}
       </div>
     </LocalizationProvider>
+
 
   )
 }
