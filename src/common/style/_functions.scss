@@ -9,7 +9,6 @@
   border: 1.5px solid $allTextsBorder;
   padding: 9px;
   outline: none;
-  direction: rtl;
   width: -webkit-fill-available;
   font-size: 1rem;
   resize: none;
@@ -23,7 +22,7 @@
   text-align: center;
   text-transform: uppercase;
   color: $black;
-  width: 8.125rem;
+  width: 10rem;
   margin: 0 auto;
   cursor: pointer;
   transition: all 0.2s;

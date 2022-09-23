@@ -1,5 +1,5 @@
 @import "../../common/style/_colors.scss";
-@import "../../common/style/functions.scss";
+@import "../../common/style/_functions.scss";
 @import "../../common/style/_variables.scss";
 
 .white-container {
@@ -22,39 +22,7 @@
 
   form {
     padding: $padding;
-
-    .message {
-      @include inputSetUp();
-      margin-bottom: 1.25rem;
-    }
-
-    .submit {
-      @include button();
-      font-size: 1.25rem;
-      display: block;
-      background: $submit;
-      border: none;
-      margin: 0 auto;
-      width: 9.375rem;
-      padding: 10px;
-      color: $white;
-      &:hover {
-        background-color: darken($color: $submit, $amount: 3%);
-      }
-    }
   }
-}
-
-.add-product {
-  border: 1.5px solid $black;
-  background-color: $white;
-  font-size: 1rem;
-  &:hover {
-    background: $label;
-    color: $white;
-    border: 1.5px solid $label;
-  }
-  @include button();
 }
 
 @media only screen and (min-width: 550px) {

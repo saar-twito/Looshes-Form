@@ -32,13 +32,13 @@ const CompanyOwnerDetails = ({ control, errors, register }: ICompanyOwnerDetails
 
   return (
     <div>
-      <h3>פרטי בעל\י החברה</h3>
+      <h3>Company Owner Details</h3>
       <div className="white-container">
         <table>
           <thead>
             <tr>
-              <th>שם משפחה</th>
-              <th>שם פרטי</th>
+              <th>first Name</th>
+              <th>last name</th>
             </tr>
           </thead>
 
@@ -59,7 +59,7 @@ const CompanyOwnerDetails = ({ control, errors, register }: ICompanyOwnerDetails
           </tbody>
 
         </table>
-        <button type="button" className="add-product" onClick={() => addOwner()}>הוסף בעלים</button>
+        <button type="button" className="add-item" onClick={() => addOwner()}>add owner</button>
       </div>
     </div>
   )

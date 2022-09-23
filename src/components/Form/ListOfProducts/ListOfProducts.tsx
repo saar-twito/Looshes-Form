@@ -40,7 +40,7 @@ const ListOfProducts = ({ control, register, errors }: IListOfProducts) => {
   return (
     <>
       {screenWidth < 500 ? <>
-        <h3>רשימת מוצרים</h3>
+        <h3>Products list</h3>
         <div className="description-of-the-request-container white-container">
 
           {fields.map((field, index) => (
@@ -48,36 +48,36 @@ const ListOfProducts = ({ control, register, errors }: IListOfProducts) => {
 
               <FormControl
                 htmlFor='itemName'
-                label='מוצר'
+                label='item Name'
                 register={register}
                 registerName={`products.${index}.itemName`}
                 errorMessage={errors?.products && errors?.products[index]?.itemName?.message} />
 
               <FormControl
                 htmlFor='color'
-                label='צבע'
+                label='color'
                 register={register}
                 registerName={`products.${index}.color`}
                 errorMessage={errors?.products && errors?.products[index]?.color?.message} />
 
               <FormControl
                 htmlFor='size'
-                label='מידה'
+                label='size'
                 register={register}
                 registerName={`products.${index}.size`}
                 errorMessage={errors?.products && errors?.products[index]?.size?.message} />
 
               <div className="form-control">
-                <label htmlFor="kind">סוג</label>
+                <label htmlFor="kind">Kind</label>
                 <select id="kind" {...register(`products.${index}.kind`)}>
-                  <option value="קרטונים">קרטונים</option>
-                  <option value="גלילים">גלילים</option>
+                  <option value="cartons">cartons</option>
+                  <option value="Rolls">Rolls</option>
                 </select>
               </div>
 
               <FormControl
                 htmlFor='amount'
-                label='כמות'
+                label='amount'
                 register={register}
                 registerName={`products.${index}.amount`}
                 errorMessage={errors?.products && errors?.products[index]?.amount?.message} />
@@ -85,38 +85,38 @@ const ListOfProducts = ({ control, register, errors }: IListOfProducts) => {
               <button className="remove-trash"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></button>
             </div>
           ))}
-          <button type="button" className="add-product" onClick={() => addProduct()}>הוסף מוצר</button>
+          <button type="button" className="add-item" onClick={() => addProduct()}>Add Product</button>
         </div>
 
       </> : <>
-        <h3>רשימת מוצרים</h3>
+        <h3>Products list</h3>
         <div className="white-container">
           <table>
             <thead>
               <tr>
-                <th>כמות</th>
-                <th>סוג</th>
-                <th>מידה</th>
-                <th>צבע</th>
-                <th>מוצר</th>
+                <th>item Name</th>
+                <th>color</th>
+                <th>size</th>
+                <th>kind</th>
+                <th>amount</th>
               </tr>
             </thead>
 
             <tbody>
               {fields.map((field, index) => (
                 <tr key={field.id}>
+                  <td><textarea {...register(`products.${index}.itemName`)} /></td>
+                  <td><textarea {...register(`products.${index}.color`)} /></td>
+                  <td><textarea {...register(`products.${index}.size`)} /></td>
+                  <td>
+                    <select id="kind" {...register(`products.${index}.kind`)}>
+                      <option value="cartons">cartons</option>
+                      <option value="Rolls">Rolls</option>
+                    </select>
+                  </td>
                   <td>
                     <input type="number" {...register(`products.${index}.amount`)} />
                     <p className="error">{errors?.products && errors?.products[index]?.amount?.message}</p>
-                  </td>
-                  <td><textarea {...register(`products.${index}.size`)} /></td>
-                  <td><textarea {...register(`products.${index}.color`)} /></td>
-                  <td><textarea {...register(`products.${index}.itemName`)} /></td>
-                  <td>
-                    <select id="kind" {...register(`products.${index}.kind`)}>
-                      <option value="קרטונים">קרטונים</option>
-                      <option value="גלילים">גלילים</option>
-                    </select>
                   </td>
 
                   <td className="remove-trash"><RiDeleteBinLine onClick={() => removeProduct(index)} className='remove-trash-icon' /></td>
@@ -125,7 +125,7 @@ const ListOfProducts = ({ control, register, errors }: IListOfProducts) => {
             </tbody>
 
           </table>
-          <button type="button" className="add-product" onClick={() => addProduct()}>הוסף מוצר</button>
+          <button type="button" className="add-item" onClick={() => addProduct()}>add Product</button>
         </div>
       </>}
     </>

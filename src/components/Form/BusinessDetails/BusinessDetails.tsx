@@ -20,9 +20,9 @@ const BusinessDetails = ({ register, errors, date, handleChange }: IBusinessDeta
     <div className="business-details-container">
 
       <header className='business-details-header'>
-        <h3>פרטי העסק</h3>
+        <h2>business details</h2>
         <div className="form-control">
-          <label htmlFor="date">תאריך</label>
+          <label htmlFor="date">Date</label>
           {screenWidth < 500 ? <>
             <MobileDatePicker
               {...register("dateOfSubmit")}
@@ -52,7 +52,7 @@ const BusinessDetails = ({ register, errors, date, handleChange }: IBusinessDeta
         {/* COMPANY NAME */}
         <FormControl
           htmlFor='companyName'
-          label='שם החברה'
+          label='company name'
           register={register}
           registerName="businessDetails.companyName"
           errorMessage={errors.businessDetails?.companyName?.message} />
@@ -60,7 +60,7 @@ const BusinessDetails = ({ register, errors, date, handleChange }: IBusinessDeta
         {/* COMPANY ADDRESS */}
         <FormControl
           htmlFor='companyAddress'
-          label='כתובת'
+          label='company Address'
           register={register}
           registerName="businessDetails.companyAddress"
           errorMessage={errors.businessDetails?.companyAddress?.message} />
@@ -68,7 +68,7 @@ const BusinessDetails = ({ register, errors, date, handleChange }: IBusinessDeta
         {/* VAT NUMBER */}
         <FormControl
           htmlFor='vatNumber'
-          label='ח.פ / עוסק מורשה'
+          label='vat Number'
           register={register}
           registerName="businessDetails.vatNumber"
           errorMessage={errors.businessDetails?.vatNumber?.message} />
@@ -76,7 +76,7 @@ const BusinessDetails = ({ register, errors, date, handleChange }: IBusinessDeta
         {/* COMPANY PHONE */}
         <FormControl
           htmlFor='companyPhone'
-          label='מספר טלפון'
+          label='company Phone'
           register={register}
           registerName="businessDetails.companyPhone"
           errorMessage={errors.businessDetails?.companyPhone?.message} />
@@ -84,7 +84,7 @@ const BusinessDetails = ({ register, errors, date, handleChange }: IBusinessDeta
         {/* PHONE PERSONAL */}
         <FormControl
           htmlFor='phonePersonal'
-          label='מספר סלולרי'
+          label='phone Personal'
           register={register}
           registerName="businessDetails.phonePersonal"
           errorMessage={errors.businessDetails?.phonePersonal?.message} />
@@ -92,7 +92,7 @@ const BusinessDetails = ({ register, errors, date, handleChange }: IBusinessDeta
         {/* FAX NUMBER */}
         <FormControl
           htmlFor='faxNumber'
-          label='מספר פקס'
+          label='fax Number'
           register={register}
           registerName="businessDetails.faxNumber"
           errorMessage={errors.businessDetails?.faxNumber?.message} />
@@ -100,7 +100,7 @@ const BusinessDetails = ({ register, errors, date, handleChange }: IBusinessDeta
         {/* EMAIL */}
         <FormControl
           htmlFor='email'
-          label='כתובת אימייל'
+          label='email'
           register={register}
           registerName="businessDetails.email"
           errorMessage={errors.businessDetails?.email?.message} />
@@ -108,7 +108,7 @@ const BusinessDetails = ({ register, errors, date, handleChange }: IBusinessDeta
         {/* COMPANY OCCUPATION */}
         <FormControl
           htmlFor='companyOccupation'
-          label='עיסוק'
+          label='company Occupation'
           register={register}
           registerName="businessDetails.companyOccupation"
           errorMessage={errors.businessDetails?.companyOccupation?.message} />

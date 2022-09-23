@@ -6,7 +6,7 @@ const Header = () => {
   return (
     <header className="golden-tape-form-header">
       <img src={logo} alt="" />
-      <h2>טופס בקשה להצעת מחיר</h2>
+      <h1>form for a new client</h1>
     </header>
   )
 }

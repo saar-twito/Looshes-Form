@@ -66,11 +66,11 @@ const HomePage = () => {
           {/* DESCRIPTION OF THE REQUEST SECTION */}
           <ListOfProducts control={control} register={register} errors={errors} />
 
-
+          {/* Signer's name */}
           <SignerName register={register} errors={errors} />
 
           {/* SUBMIT BUTTON */}
-          <button type="submit" className="submit">שלח</button>
+          <button type="submit" className="submit">Send</button>
         </form>
 
       </div>

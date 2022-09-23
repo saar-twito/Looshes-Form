@@ -13,7 +13,8 @@ export const formSchema = object({
       .max(50, "שם החברה צריך להכיל עד 50 תווים")
       .min(1, "שם החברה צריך להיות בעל תו אחד לפחות")
       .trim()
-      .required("נדרש למלא"),
+      .required("נדרש למלא")
+      .label("dshdkjsdks"),
 
     companyPhone: string()
       .test("is-phone", `פורמט ישראל או ארה"ב בלבד`, value => isMobilePhone(`${value}`, ['he-IL', 'en-US']))

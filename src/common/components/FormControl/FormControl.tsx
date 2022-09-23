@@ -1,4 +1,4 @@
-
+import './formControl.scss'
 
 interface IFormControl {
   htmlFor: string;

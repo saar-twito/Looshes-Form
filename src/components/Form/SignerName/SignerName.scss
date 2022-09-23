@@ -1,0 +1,22 @@
+@import "../../../common/style/_functions.scss";
+@import "../../../common/style/_colors.scss";
+
+.message {
+  @include inputSetUp();
+  margin-bottom: 1.25rem;
+}
+
+.submit {
+  @include button();
+  font-size: 1.25rem;
+  display: block;
+  background: $submit;
+  border: none;
+  margin: 0 auto;
+  width: 9.375rem;
+  padding: 10px;
+  color: $white;
+  &:hover {
+    background-color: darken($color: $submit, $amount: 3%);
+  }
+}
