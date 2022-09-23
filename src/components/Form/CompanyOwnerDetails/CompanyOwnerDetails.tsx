@@ -3,6 +3,7 @@ import { AiOutlineUserDelete } from "react-icons/ai";
 import { Control, useFieldArray } from 'react-hook-form';
 import { FormValues, IFormUtils } from 'common/interface';
 import { useEffect } from "react";
+import './CompanyOwnerDetails.scss'
 
 interface ICompanyOwnerDetails extends IFormUtils {
   control: Control<FormValues, any>
@@ -28,10 +29,8 @@ const CompanyOwnerDetails = ({ control, errors, register }: ICompanyOwnerDetails
 
   const removeOwner = (index: number) => remove(index)
 
-
-
   return (
-    <div>
+    <>
       <h3>Company Owner Details</h3>
       <div className="white-container">
         <table>
@@ -61,7 +60,7 @@ const CompanyOwnerDetails = ({ control, errors, register }: ICompanyOwnerDetails
         </table>
         <button type="button" className="add-item" onClick={() => addOwner()}>add owner</button>
       </div>
-    </div>
+    </>
   )
 }
 

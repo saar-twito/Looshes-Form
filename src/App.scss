@@ -9,6 +9,10 @@
     margin: 0;
 }
 
+body {
+    font-family: "Poppins", sans-serif;
+}
+
 /* General rules */
 .form-control {
     display: flex;
@@ -18,7 +22,7 @@
     label {
         font-size: 0.9375rem;
         color: $label;
-        font-weight: 600;
+        font-weight: 500;
     }
 
     input,

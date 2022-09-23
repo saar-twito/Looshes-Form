@@ -2,70 +2,72 @@ import isAlpha from "validator/lib/isAlpha";
 import isAlphanumeric from "validator/lib/isAlphanumeric";
 import isEmail from "validator/lib/isEmail";
 import isMobilePhone from "validator/lib/isMobilePhone";
-import { array, object, string } from 'yup';
+import { array, object, string, number } from 'yup';
 
 export const formSchema = object({
   dateOfSubmit: string().required(),
 
   businessDetails: object({
     companyName: string()
-      .test("is-company-name", "עברית או אנגלית בלבד", value => isAlphanumeric(`${value}`, 'en-US', { ignore: ' ' }) || isAlphanumeric(`${value}`, 'he', { ignore: ' ' }))
-      .max(50, "שם החברה צריך להכיל עד 50 תווים")
-      .min(1, "שם החברה צריך להיות בעל תו אחד לפחות")
+      .test("is-company-name", "Hebrew or English only", value => isAlphanumeric(`${value}`, 'en-US', { ignore: ' ' }) || isAlphanumeric(`${value}`, 'he', { ignore: ' ' }))
+      .max(50, "The company name should contain up to 50 characters")
+      .min(1, "The company name must have at least one character")
       .trim()
-      .required("נדרש למלא")
-      .label("dshdkjsdks"),
+      .required("required"),
 
     companyPhone: string()
-      .test("is-phone", `פורמט ישראל או ארה"ב בלבד`, value => isMobilePhone(`${value}`, ['he-IL', 'en-US']))
+      .test("is-phone", `Israel or USA format only`, value => isMobilePhone(`${value}`, ['he-IL', 'en-US']))
       .trim()
-      .required("נדרש למלא"),
+      .required("required"),
 
     email: string()
-      .email("כתובת אימייל לא חוקית")
-      .test("is-email", "כתובת אימייל לא חוקית", value => isEmail(`${value}`))
-      .max(100, `כתובת הדוא"ל צריכה להכיל עד 100 תווים`)
+      .email("Invalid email address")
+      .test("is-email", "Invalid email address", value => isEmail(`${value}`))
+      .max(100, `The email address should contain up to 100 characters`)
       .trim()
-      .required("נדרש למלא"),
+      .required("required"),
 
     companyOccupation: string()
-      .test("is-company-subject", "עברית או אנגלית בלבד", value => isAlphanumeric(`${value}`, 'en-US', { ignore: ' ' }) || isAlphanumeric(`${value}`, 'he', { ignore: ' ' }))
-      .max(100, "העיסוק של החברה צריך להיות עד 100 תווים")
-      .min(2, "העיסוק של החברה צריך להיות לפחות 2 תווים.")
+      .test("is-company-subject", "Hebrew or English only", value => isAlphanumeric(`${value}`, 'en-US', { ignore: ' ' }) || isAlphanumeric(`${value}`, 'he', { ignore: ' ' }))
+      .max(100, "The company's occupation should be up to 100 characters")
+      .min(2, "The company's occupation should be at least 2 characters")
       .trim()
-      .required("נדרש למלא"),
+      .required("required"),
 
 
     vatNumber: string()
-      .test("is-number", `רק מספרים נדרשים`, value => /^\d+$/.test(value as string))
-      .max(9, `עד 9 תווים`)
-      .min(8, `לפחות 8 תווים`)
+      .test("is-number", `Only numbers are required`, value => /^\d+$/.test(value as string))
+      .max(9, `Up to 9 characters`)
+      .min(8, `At least 8 characters`)
       .trim()
-      .required("נדרש למלא"),
+      .required("required"),
 
 
     phonePersonal: string()
-      .test("is-personal-phone", `פורמט ישראל או ארה"ב בלבד`, value => isMobilePhone(`${value}`, ['he-IL', 'en-US']))
+      .test("is-personal-phone", `Israel or USA format only`, value => isMobilePhone(`${value}`, ['he-IL', 'en-US']))
       .trim()
-      .required("נדרש למלא"),
+      .required("required"),
 
     faxNumber: string()
-      .test("is-fax-number", "מספר פקס לא חוקי", value => /^\d+$/.test(value as string))
+      .test("is-fax-number", "Invalid fax number", value => /^\d+$/.test(value as string))
       .trim()
-      .required("נדרש למלא"),
+      .required("required"),
 
     companyAddress: string()
-      .max(100, "עד 100 תווים")
-      .min(2, "לפחות 2 תווים")
+      .max(100, "Up to 100 characters")
+      .min(2, "At least 2 characters")
       .trim()
-      .required("נדרש למלא"),
+      .required("required"),
   }),
 
   products: array(
     object({
       itemName: string().optional().trim(),
-      color: string().optional().trim(),
-      amount: string().optional(),
+      color: string().optional().trim().when('itemName', { // If itemName.length not empty, required color to be fill.
+        is: (itemName: string) => itemName.length > 0,
+        then: string().required('Field is required')
+      }),
+      amount: number().positive().integer().max(100).min(1).optional(),
       size: string().optional().trim()
     })
   ),
@@ -73,26 +75,26 @@ export const formSchema = object({
   owners: array(
     object({
       firstName: string()
-        .test("is-first-name", "עברית או אנגלית בלבד", value => isAlpha(`${value}`, 'en-US', { ignore: ' ' }) || isAlpha(`${value}`, 'he', { ignore: ' ' }))
-        .max(30, "עד 30 תווים")
-        .min(1, "לפחות תו אחד")
+        .test("is-first-name", "Hebrew or English only", value => isAlpha(`${value}`, 'en-US', { ignore: ' ' }) || isAlpha(`${value}`, 'he', { ignore: ' ' }))
+        .max(30, "Up to 30 characters")
+        .min(1, "At least one character")
         .trim()
-        .required("נדרש למלא"),
+        .required("required"),
 
       lastName: string()
-        .test("is-last-name", "עברית או אנגלית בלבד", value => isAlpha(`${value}`, 'en-US', { ignore: ' ' }) || isAlpha(`${value}`, 'he', { ignore: ' ' }))
-        .max(30, "עד 30 תווים")
-        .min(1, "לפחות תו אחד")
+        .test("is-last-name", "Hebrew or English only", value => isAlpha(`${value}`, 'en-US', { ignore: ' ' }) || isAlpha(`${value}`, 'he', { ignore: ' ' }))
+        .max(30, "Up to 30 characters")
+        .min(1, "At least one character")
         .trim()
-        .required("נדרש למלא"),
+        .required("required"),
     })
   ),
 
   signerName: string()
-    .min(2, "לפחות שני תווים")
-    .max(30, "עד 30 תווים")
+    .min(2, "At least two characters")
+    .max(30, "Up to 30 characters")
     .trim()
-    .required("נדרש למלא"),
+    .required("required"),
 
   message: string().max(300).optional().trim(),
 })

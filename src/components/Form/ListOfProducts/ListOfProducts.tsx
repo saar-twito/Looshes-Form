@@ -67,14 +67,6 @@ const ListOfProducts = ({ control, register, errors }: IListOfProducts) => {
                 registerName={`products.${index}.size`}
                 errorMessage={errors?.products && errors?.products[index]?.size?.message} />
 
-              <div className="form-control">
-                <label htmlFor="kind">Kind</label>
-                <select id="kind" {...register(`products.${index}.kind`)}>
-                  <option value="cartons">cartons</option>
-                  <option value="Rolls">Rolls</option>
-                </select>
-              </div>
-
               <FormControl
                 htmlFor='amount'
                 label='amount'
@@ -97,7 +89,6 @@ const ListOfProducts = ({ control, register, errors }: IListOfProducts) => {
                 <th>item Name</th>
                 <th>color</th>
                 <th>size</th>
-                <th>kind</th>
                 <th>amount</th>
               </tr>
             </thead>
@@ -106,13 +97,13 @@ const ListOfProducts = ({ control, register, errors }: IListOfProducts) => {
               {fields.map((field, index) => (
                 <tr key={field.id}>
                   <td><textarea {...register(`products.${index}.itemName`)} /></td>
-                  <td><textarea {...register(`products.${index}.color`)} /></td>
-                  <td><textarea {...register(`products.${index}.size`)} /></td>
                   <td>
-                    <select id="kind" {...register(`products.${index}.kind`)}>
-                      <option value="cartons">cartons</option>
-                      <option value="Rolls">Rolls</option>
-                    </select>
+                    <textarea {...register(`products.${index}.color`)} />
+                    <p className="error">{errors?.products && errors?.products[index]?.color?.message}</p>
+                  </td>
+                  <td>
+                    <textarea {...register(`products.${index}.size`)} />
+                    <p className="error">{errors?.products && errors?.products[index]?.size?.message}</p>
                   </td>
                   <td>
                     <input type="number" {...register(`products.${index}.amount`)} />

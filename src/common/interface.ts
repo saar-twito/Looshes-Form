@@ -21,7 +21,7 @@ export interface IFormUtils {
 
 
 export interface FormValues {
-  dateOfSubmit: Dayjs | null
+  date: Dayjs | null
   businessDetails: {
     companyName: string;
     companyPhone: string;
