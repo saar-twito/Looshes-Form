@@ -1,4 +1,5 @@
 import { Dayjs } from "dayjs";
+import { UseFormRegister } from "react-hook-form";
 
 interface IAddProduct {
   itemName: "",
@@ -15,7 +16,7 @@ interface IAddOwner {
 
 
 export interface IFormUtils {
-  register: any,
+  register: UseFormRegister<FormValues>,
   errors: any,
 }
 

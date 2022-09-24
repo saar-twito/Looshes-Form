@@ -3,12 +3,11 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
 import FormControl from 'common/components/FormControl/FormControl';
 import UseWindowSize from 'common/hooks/UseWindowsSize';
+import { IFormUtils } from 'common/interface';
 import { Dayjs } from 'dayjs';
 import './BusinessDetails.scss'
 
-interface IBusinessDetails {
-  register: any;
-  errors: any;
+interface IBusinessDetails extends IFormUtils {
   date: Dayjs | null;
   handleChange: (newValue: Dayjs | null) => void
 }

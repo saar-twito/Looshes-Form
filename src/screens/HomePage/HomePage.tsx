@@ -1,5 +1,4 @@
 import './homePage.scss'
-
 import { useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,20 +14,19 @@ import ListOfProducts from 'components/Form/ListOfProducts/ListOfProducts';
 import SignerName from 'components/Form/SignerName/SignerName';
 import { formSchema } from 'components/Form/formSchema';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 
 const HomePage = () => {
   const [date, setDate] = React.useState<Dayjs | null>(dayjs(new Date()));
   const [isSending, setIsSending] = React.useState<boolean>(false)
   const form = useRef<any>()
+  const navigate = useNavigate()
 
 
   // useForm Will help us managing the form properties
   const { control, register, handleSubmit, formState: { errors } } = useForm<FormValues>({
     mode: 'onBlur',
-    defaultValues: {
-      date: date,
-    },
     resolver: yupResolver(formSchema) // resolver for yup to work with react-hook-form
   });
 
@@ -37,8 +35,6 @@ const HomePage = () => {
     // @ts-ignore //! => Don't Remove The @Ts-Ignore
     form.current[0].value = date?.$d;
     form.current[0].name = "Date of submit";
-
-
 
     form.current[3].name = "Company name";
     form.current[4].name = "Company address";
@@ -49,36 +45,25 @@ const HomePage = () => {
     form.current[9].name = "Email";
     form.current[10].name = "Company Occupation";
 
-
     setIsSending(true)
 
     const handelFormSubmissionError = () => {
-      toast.error("An error occurred please contact me via Whatsapp", {
-        position: toast.POSITION.BOTTOM_CENTER,
-        autoClose: 3000,
-        hideProgressBar: true
-      });
+      toast.error("An error occurred please contact me via Email: imsaartwito@gmail.com")
       setIsSending(false)
     }
 
-    console.log(form);
-    console.log(data);
+    fetch(`${process.env.React_APP_FORMSPREE}`, {
+      method: 'POST',
+      // @ts-ignore
+      body: new FormData(form.current),
+      headers: { 'Accept': 'application/json' }
+    }).then(response => {
+      if (response.ok) {
+        navigate(`/form-submitted`)
+        // navigate("landing-page") without the "/" it will be relative "home-page/landing-page"
+      } else handelFormSubmissionError()
 
-
-    // fetch('https://formspree.io/f/maykydyq', {
-    //   method: 'POST',
-    //   // @ts-ignore
-    //   body: new FormData(form.current),
-    //   headers: { 'Accept': 'application/json' }
-    // }).then(response => {
-    //   if (response.ok) {
-    //     // helpers.resetForm();
-    //     // navigate(`/${routers.formSubmission}`)
-    //     // navigate("landing-page") without the "/" it will be relative "home-page/landing-page"
-    //   } else handelFormSubmissionError()
-
-    // }).catch(err => { handelFormSubmissionError() })
-
+    }).catch(err => { handelFormSubmissionError() })
   })
 
 
@@ -116,7 +101,7 @@ const HomePage = () => {
           <SignerName register={register} errors={errors} />
 
           {/* SUBMIT BUTTON */}
-          <button type="submit" className="submit">Send</button>
+          <button type="submit" disabled={isSending} className="submit">{isSending ? "sending" : "send"}</button>
         </form>
 
       </div>

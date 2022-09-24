@@ -1,0 +1,14 @@
+.submit-successful {
+  max-width: 747px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+
+  img {
+    width: 500px;
+  }
+}

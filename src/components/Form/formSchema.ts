@@ -5,7 +5,7 @@ import isMobilePhone from "validator/lib/isMobilePhone";
 import { array, object, string, number } from 'yup';
 
 export const formSchema = object({
-  dateOfSubmit: string().required(),
+  date: string().required(),
 
   businessDetails: object({
     companyName: string()
@@ -13,7 +13,7 @@ export const formSchema = object({
       .max(50, "The company name should contain up to 50 characters")
       .min(1, "The company name must have at least one character")
       .trim()
-      .required("required"),
+      .required("required").label("fdkfhdjfhjdhfjdhfjdhfjdfkjdkjdjhfkjd"),
 
     companyPhone: string()
       .test("is-phone", `Israel or USA format only`, value => isMobilePhone(`${value}`, ['he-IL', 'en-US']))
@@ -67,7 +67,7 @@ export const formSchema = object({
         is: (itemName: string) => itemName.length > 0,
         then: string().required('Field is required')
       }),
-      amount: number().positive().integer().max(100).min(1).optional(),
+      amount: number().positive().integer().max(100, "Amount should not exceed 100").min(1, "Amount should be greater than 0").optional(),
       size: string().optional().trim()
     })
   ),
