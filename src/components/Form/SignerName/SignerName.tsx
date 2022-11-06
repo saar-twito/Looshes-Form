@@ -5,7 +5,7 @@ import './SignerName.scss'
 const SignerName = ({ register, errors }: IFormUtils) => {
   return (
     <div>
-      <h3>Signer's name</h3>
+      <h2>Signer's name</h2>
       <footer className="white-container">
         {/* Signer's name */}
         <div className="form-control">

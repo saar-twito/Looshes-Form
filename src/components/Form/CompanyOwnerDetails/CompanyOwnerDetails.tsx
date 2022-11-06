@@ -31,7 +31,7 @@ const CompanyOwnerDetails = ({ control, errors, register }: ICompanyOwnerDetails
 
   return (
     <>
-      <h3>Company Owner Details</h3>
+      <h2>Company Owner Details</h2>
       <div className="white-container">
         <table>
           <thead>

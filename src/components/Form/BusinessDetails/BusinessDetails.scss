@@ -3,9 +3,9 @@
 
   .business-details-header {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: center;
+    align-items: start;
 
     .form-control-date {
       width: 110px;
@@ -13,8 +13,12 @@
   }
 }
 
-@media only screen and (min-width: 550px) {
+@media only screen and (min-width: 593px) {
   .business-details-container {
+    .business-details-header {
+      flex-direction: row;
+      align-items: center;
+    }
     .white-container {
       flex-direction: row;
       flex-wrap: wrap;
