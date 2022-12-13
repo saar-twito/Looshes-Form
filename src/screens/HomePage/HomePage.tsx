@@ -34,6 +34,7 @@ const HomePage = () => {
 
   const onSubmit = handleSubmit(async (data: FormValues) => {
     console.log('onSubmit ~ data', data);
+    navigate('/form-submitted');
   });
 
   const handleChange = (newValue: Dayjs | null) => {

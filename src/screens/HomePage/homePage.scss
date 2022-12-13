@@ -13,8 +13,9 @@
 .golden-tape-form-container {
   @include flex();
   padding-top: 1.5625rem;
-  max-width: 46.5rem;
-  padding: 2rem 1rem;
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1rem 2rem;
   form {
     margin-top: 1rem;
   }
