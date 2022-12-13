@@ -33,8 +33,7 @@ const HomePage = () => {
   });
 
   const onSubmit = handleSubmit(async (data: FormValues) => {
-    console.log("onSubmit ~ data", data)
-
+    console.log('onSubmit ~ data', data);
   });
 
   const handleChange = (newValue: Dayjs | null) => {
